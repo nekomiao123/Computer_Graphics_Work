@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>873</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>873</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_F">
+    <property name="title">
+     <string>文件(F)</string>
+    </property>
+    <addaction name="action_N"/>
+    <addaction name="action_O_2"/>
+    <addaction name="action_C"/>
+    <addaction name="action_S_2"/>
+    <addaction name="action_A"/>
+    <addaction name="action_P"/>
+    <addaction name="action_V"/>
+    <addaction name="action_R_2"/>
+    <addaction name="action_X"/>
+   </widget>
+   <widget class="QMenu" name="menu_E">
+    <property name="title">
+     <string>编辑(E)</string>
+    </property>
+    <addaction name="action_U"/>
+    <addaction name="action_R_3"/>
+    <addaction name="action_T"/>
+    <addaction name="action_C_2"/>
+    <addaction name="action_P_2"/>
+    <addaction name="action_D"/>
+   </widget>
+   <widget class="QMenu" name="menu_P">
+    <property name="title">
+     <string>查看(V)</string>
+    </property>
+    <addaction name="action_T_3"/>
+    <addaction name="action_S_3"/>
+    <addaction name="action_B_3"/>
+    <addaction name="action_P_5"/>
+   </widget>
+   <widget class="QMenu" name="menu_C">
+    <property name="title">
+     <string>图形(I)</string>
+    </property>
+    <addaction name="action_P_3"/>
+    <addaction name="action_R_4"/>
+    <addaction name="action_E"/>
+    <addaction name="action_C_3"/>
+    <addaction name="action_G"/>
+    <addaction name="action_L"/>
+   </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>修改(M)</string>
+    </property>
+    <widget class="QMenu" name="menu_T">
+     <property name="title">
+      <string>转换(&amp;T)</string>
+     </property>
+     <addaction name="action_S"/>
+     <addaction name="action_R_5"/>
+     <addaction name="action_90_W"/>
+     <addaction name="action_90_C"/>
+     <addaction name="action_180_R"/>
+     <addaction name="action_H"/>
+     <addaction name="action_V_2"/>
+    </widget>
+    <widget class="QMenu" name="menu_C_2">
+     <property name="title">
+      <string>颜色(C)</string>
+     </property>
+     <addaction name="action_I"/>
+     <addaction name="action_B"/>
+     <addaction name="action_E_2"/>
+     <addaction name="action_P_4"/>
+     <addaction name="action_F"/>
+     <addaction name="action_D_2"/>
+     <addaction name="action_N_2"/>
+    </widget>
+    <widget class="QMenu" name="menu_O">
+     <property name="title">
+      <string>排序(&amp;O)</string>
+     </property>
+     <addaction name="action_T_2"/>
+     <addaction name="action_U_2"/>
+     <addaction name="action_D_3"/>
+     <addaction name="action_B_2"/>
+    </widget>
+    <addaction name="action_9"/>
+    <addaction name="action_10"/>
+    <addaction name="menu_T"/>
+    <addaction name="menu_C_2"/>
+    <addaction name="menu_O"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>窗口(W)</string>
+    </property>
+    <addaction name="action_13"/>
+    <addaction name="action_14"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>帮助(H)</string>
+    </property>
+    <addaction name="action_15"/>
+    <addaction name="action_16"/>
+   </widget>
+   <addaction name="menu_F"/>
+   <addaction name="menu_E"/>
+   <addaction name="menu_P"/>
+   <addaction name="menu_C"/>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_N"/>
+   <addaction name="action_O_2"/>
+   <addaction name="action_S_2"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar_2">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="windowTitle">
+    <string>toolBar_2</string>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>30</width>
+     <height>30</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_9"/>
+   <addaction name="action_L"/>
+   <addaction name="action_R_4"/>
+   <addaction name="action_C_3"/>
+   <addaction name="action_I"/>
+   <addaction name="action_E_2"/>
+   <addaction name="action_D_2"/>
+   <addaction name="action_S"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar_3">
+   <property name="windowTitle">
+    <string>toolBar_3</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="action_10"/>
+   <addaction name="action_P_3"/>
+   <addaction name="action_E"/>
+   <addaction name="action_G"/>
+   <addaction name="action_B"/>
+   <addaction name="action_R_5"/>
+  </widget>
+  <action name="action_9">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/arrow_m.cur</normaloff>:/image/images/arrow_m.cur</iconset>
+   </property>
+   <property name="text">
+    <string>选取(&amp;S)</string>
+   </property>
+  </action>
+  <action name="action_10">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/adjust.cur</normaloff>:/image/images/adjust.cur</iconset>
+   </property>
+   <property name="text">
+    <string>调整(&amp;A)</string>
+   </property>
+  </action>
+  <action name="action_13">
+   <property name="text">
+    <string>放大</string>
+   </property>
+  </action>
+  <action name="action_14">
+   <property name="text">
+    <string>缩小</string>
+   </property>
+  </action>
+  <action name="action_15">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/selmov.cur</normaloff>:/image/images/selmov.cur</iconset>
+   </property>
+   <property name="text">
+    <string>移动</string>
+   </property>
+  </action>
+  <action name="action_16">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/rotate.cur</normaloff>:/image/images/rotate.cur</iconset>
+   </property>
+   <property name="text">
+    <string>旋转</string>
+   </property>
+  </action>
+  <action name="action_N">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/XinJian.png</normaloff>:/image/images/XinJian.png</iconset>
+   </property>
+   <property name="text">
+    <string>新建(&amp;N)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="action_C">
+   <property name="text">
+    <string>关闭(&amp;C)</string>
+   </property>
+  </action>
+  <action name="action_A">
+   <property name="text">
+    <string>另存为(&amp;A)</string>
+   </property>
+  </action>
+  <action name="action_P">
+   <property name="text">
+    <string>打印(&amp;P)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="action_V">
+   <property name="text">
+    <string>打印预览(&amp;V)</string>
+   </property>
+  </action>
+  <action name="action_R_2">
+   <property name="text">
+    <string>打印设置(&amp;R)</string>
+   </property>
+  </action>
+  <action name="action_X">
+   <property name="text">
+    <string>退出(&amp;X)</string>
+   </property>
+  </action>
+  <action name="action_U">
+   <property name="text">
+    <string>撤销(&amp;U)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="action_R_3">
+   <property name="text">
+    <string>恢复(&amp;R)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="action_T">
+   <property name="text">
+    <string>剪切(&amp;T)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="action_C_2">
+   <property name="text">
+    <string>复制(&amp;C)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="action_P_2">
+   <property name="text">
+    <string>粘贴(&amp;P)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="action_D">
+   <property name="text">
+    <string>删除(&amp;D)</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
+   </property>
+  </action>
+  <action name="action_P_3">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/zhexian.png</normaloff>:/image/images/zhexian.png</iconset>
+   </property>
+   <property name="text">
+    <string>折线(&amp;P)</string>
+   </property>
+  </action>
+  <action name="action_R_4">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/rect.ico</normaloff>:/image/images/rect.ico</iconset>
+   </property>
+   <property name="text">
+    <string>矩形(&amp;R)</string>
+   </property>
+  </action>
+  <action name="action_E">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/ellipse.ico</normaloff>:/image/images/ellipse.ico</iconset>
+   </property>
+   <property name="text">
+    <string>椭圆(&amp;E)</string>
+   </property>
+  </action>
+  <action name="action_C_3">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/4.png</normaloff>:/image/images/4.png</iconset>
+   </property>
+   <property name="text">
+    <string>曲线(&amp;C)</string>
+   </property>
+  </action>
+  <action name="action_G">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/polygon.ico</normaloff>:/image/images/polygon.ico</iconset>
+   </property>
+   <property name="text">
+    <string>多边形(&amp;G)</string>
+   </property>
+  </action>
+  <action name="action_S">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/11.png</normaloff>:/image/images/11.png</iconset>
+   </property>
+   <property name="text">
+    <string>缩放(&amp;S)</string>
+   </property>
+  </action>
+  <action name="action_R_5">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/12.png</normaloff>:/image/images/12.png</iconset>
+   </property>
+   <property name="text">
+    <string>旋转(&amp;R)</string>
+   </property>
+  </action>
+  <action name="action_90_W">
+   <property name="text">
+    <string>顺时针旋转90度(&amp;W)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Right</string>
+   </property>
+  </action>
+  <action name="action_90_C">
+   <property name="text">
+    <string>逆时针旋转90度(&amp;C)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Left</string>
+   </property>
+  </action>
+  <action name="action_180_R">
+   <property name="text">
+    <string>旋转180度(&amp;R)</string>
+   </property>
+  </action>
+  <action name="action_H">
+   <property name="text">
+    <string>水平翻转(&amp;H)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Right</string>
+   </property>
+  </action>
+  <action name="action_V_2">
+   <property name="text">
+    <string>垂直翻转(&amp;V)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Left</string>
+   </property>
+  </action>
+  <action name="action_I">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/inkbottle.ico</normaloff>:/image/images/inkbottle.ico</iconset>
+   </property>
+   <property name="text">
+    <string>墨水瓶(&amp;I)</string>
+   </property>
+  </action>
+  <action name="action_B">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/cursor1.cur</normaloff>:/image/images/cursor1.cur</iconset>
+   </property>
+   <property name="text">
+    <string>油漆桶(&amp;B)</string>
+   </property>
+  </action>
+  <action name="action_E_2">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/eyedropp.cur</normaloff>:/image/images/eyedropp.cur</iconset>
+   </property>
+   <property name="text">
+    <string>吸管(&amp;E)</string>
+   </property>
+  </action>
+  <action name="action_P_4">
+   <property name="text">
+    <string>描绘颜色(&amp;P)</string>
+   </property>
+  </action>
+  <action name="action_F">
+   <property name="text">
+    <string>填充颜色(&amp;F)</string>
+   </property>
+  </action>
+  <action name="action_D_2">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/9.png</normaloff>:/image/images/9.png</iconset>
+   </property>
+   <property name="text">
+    <string>默认颜色(&amp;D)</string>
+   </property>
+  </action>
+  <action name="action_N_2">
+   <property name="text">
+    <string>没有颜色(&amp;N)</string>
+   </property>
+  </action>
+  <action name="action_T_2">
+   <property name="text">
+    <string>移到最上(&amp;T)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Up</string>
+   </property>
+  </action>
+  <action name="action_U_2">
+   <property name="text">
+    <string>上移一层(&amp;U)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Up</string>
+   </property>
+  </action>
+  <action name="action_D_3">
+   <property name="text">
+    <string>下移一层(&amp;D)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Down</string>
+   </property>
+  </action>
+  <action name="action_B_2">
+   <property name="text">
+    <string>移到最下(&amp;B)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Down</string>
+   </property>
+  </action>
+  <action name="action_O_2">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/open.ico</normaloff>:/image/images/open.ico</iconset>
+   </property>
+   <property name="text">
+    <string>打开(&amp;O)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="action_S_2">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/save.ico</normaloff>:/image/images/save.ico</iconset>
+   </property>
+   <property name="text">
+    <string>保存(&amp;S)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="action_T_3">
+   <property name="text">
+    <string>工具栏(&amp;T)</string>
+   </property>
+  </action>
+  <action name="action_S_3">
+   <property name="text">
+    <string>状态栏(&amp;S)</string>
+   </property>
+  </action>
+  <action name="action_B_3">
+   <property name="text">
+    <string>工具箱(&amp;B)</string>
+   </property>
+   <property name="shortcut">
+    <string>F2</string>
+   </property>
+  </action>
+  <action name="action_P_5">
+   <property name="text">
+    <string>属性面板(&amp;P)</string>
+   </property>
+   <property name="shortcut">
+    <string>F3</string>
+   </property>
+  </action>
+  <action name="action_L">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/image/images/line.ico</normaloff>:/image/images/line.ico</iconset>
+   </property>
+   <property name="text">
+    <string>直线(&amp;L)</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

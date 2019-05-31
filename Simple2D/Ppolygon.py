@@ -1,0 +1,94 @@
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+import PyQt5.Qt
+from PCloseShape import *
+import math
+FT_HORIZONTAL  = 0	#水平翻转
+FT_VERTICAL	   = 1	#垂直翻转
+
+SH_LINE        = 0       #直线图形
+SH_POLYLINE    = 1       #折线图形
+SH_CURVE       = 2       #曲线
+SH_POLYGON     = 3       #多边形
+SH_RECT        = 4       #矩形
+SH_ELLIPSE     = 5       #椭圆
+
+
+class Ppolygon(PCloseShape):
+    def __init__(self,*args):
+        super().__init__()
+        self.polygon = []
+        #相当于无参数的构造函数
+        if len(args)==0:
+            self.shapeType = SH_POLYGON
+            self.finished = False
+        #相当于带参的构造函数
+        else:
+            poly = args[0]
+            self.polygon=poly.polygon
+            self.pen=poly.pen
+            self.brush=poly.brush
+            self.path=poly.path
+            self.isVisible=poly.isVisible
+            self.isAdjusting=poly.isAdjusting
+            self.isSelected=poly.isSelected
+            self.gravity=poly.gravity
+
+    def updatePath(self):
+        path1 = QPainterPath()
+        path1.addPolygon(QPolygon(self.polygon))
+        if self.finished:
+            path1.lineTo(self.polygon[0])
+        self.path = path1
+
+    def addPoint(self,point):
+        self.polygon.append(point)
+        self.updatePath()
+
+    def setLastPoint(self,point):
+        self.polygon[-1] = point
+        self.updatePath()
+
+    def clear(self):
+        self.polygon.clear()
+        self.updatePath()
+
+    def getPointCount(self):
+        return len(self.polygon)
+
+    def ptOnShape(self,point):
+        if self.brush.Style()!= Qt.NoBrush:
+            return self.ptInShape(point)
+        #只要点在其中一条线段的引力场范围内，就认为它在多边形上
+        for i in range(len(self.polygon)):
+            if self.ptOnLine(self.polygon[i],self.polygon[(i+1)%self.polygon.length()],point):
+                return True
+        return False
+
+    def ptInShape(self,point):
+        return self.path.contains(point)
+    def isInRect(self,rect):
+        return self.rect.contains(self.path.boundingRect().toRect())
+    def tranlate(self,size):
+        self.polygon=QPolygon(self.polygon).translated(size)
+        self.updatePath()
+    def scaleM(self,S):
+        self.polygon = S.map(self.polygon)
+        self.updatePath()
+    def rotateM(self,R):
+        self.polygon = R.map(self.polygon)
+        
+    def flipM(self,F):
+        self.polygon = F.map(QPolygon(self.polygon))
+    #注意，这里有点不一样，不知道为啥
+    def getPolygon(self):
+        return self.polygon
+
+    def setPolygon(self,value):
+        self.polygon = value
+        self.updatePath()
+    def setFinished(self,value):
+        self.finished = value
+        self.updatePath()
+        
