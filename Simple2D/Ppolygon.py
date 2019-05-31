@@ -35,6 +35,30 @@ class Ppolygon(PCloseShape):
             self.isSelected=poly.isSelected
             self.gravity=poly.gravity
 
+    #序列化函数
+    def serialize(self,data):
+        super().serialize(data)
+        data<<self.polygon
+    #反序列化函数
+    def desSerialize(self,data):
+        super().desSerialize(data)
+        data>>self.polygon
+        
+    #复合赋值位相关运算符重载
+    #other对应QDataStream类型，pshape对应Pshape类型
+    #左移<<
+    def __lshift__(self, other,pshape):
+        pshape.serialize(other)
+        return other
+    #右移>>
+    def __rshift__(self, other,pshape):
+        pshape.disSerialize(other)
+        return other
+
+
+
+
+
     def updatePath(self):
         path1 = QPainterPath()
         path1.addPolygon(QPolygon(self.polygon))

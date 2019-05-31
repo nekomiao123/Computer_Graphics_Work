@@ -4,6 +4,7 @@ from PyQt5.QtCore import *
 import PyQt5.Qt
 from PCloseShape import *
 import math
+from Prectangle import *
 FT_HORIZONTAL  = 0	#水平翻转
 FT_VERTICAL	   = 1	#垂直翻转
 
@@ -14,7 +15,7 @@ SH_POLYGON     = 3       #多边形
 SH_RECT        = 4       #矩形
 SH_ELLIPSE     = 5       #椭圆
 
-class Pellipse(PCloseShape):
+class Pellipse(Prectangle):
     def __init__(self,*args):
         super().__init__()
         #相当于无参数的构造函数
@@ -32,6 +33,27 @@ class Pellipse(PCloseShape):
             self.isAdjusting=ellipse.isAdjusting
             self.isSelected=ellipse.isSelected
             self.gravity=ellipse.gravity
+
+    #序列化函数
+    def serialize(self,data):
+        super().serialize(data)
+    #反序列化函数
+    def desSerialize(self,data):
+        super().desSerialize(data)
+        
+    #复合赋值位相关运算符重载
+    #other对应QDataStream类型，pshape对应Pshape类型
+    #左移<<
+    def __lshift__(self, other,pshape):
+        pshape.serialize(other)
+        return other
+    #右移>>
+    def __rshift__(self, other,pshape):
+        pshape.disSerialize(other)
+        return other
+
+
+
 
     def ptOnShape(self,point):
         if self.brush.Style()!=Qt.NoBrush:
