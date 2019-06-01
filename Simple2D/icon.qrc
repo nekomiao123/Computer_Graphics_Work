@@ -1,0 +1,44 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icon/1.png</file>
+        <file>icon/2.png</file>
+        <file>icon/2x_after effects-icon.png</file>
+        <file>icon/2x_anti-reload.png</file>
+        <file>icon/2x_cursor.png</file>
+        <file>icon/2x_ellipse.png</file>
+        <file>icon/2x_eyedroper.png</file>
+        <file>icon/2x_file.png</file>
+        <file>icon/2x_file-2.png</file>
+        <file>icon/2x_folder.png</file>
+        <file>icon/2x_ink.png</file>
+        <file>icon/2x_left-rotate.png</file>
+        <file>icon/2x_paint.png</file>
+        <file>icon/2x_printer.png</file>
+        <file>icon/2x_reload.png</file>
+        <file>icon/2x_scissor.png</file>
+        <file>icon/3.png</file>
+        <file>icon/30.png</file>
+        <file>icon/31.png</file>
+        <file>icon/curse.png</file>
+        <file>icon/cursorcurse.png</file>
+        <file>icon/default.png</file>
+        <file>icon/help.png</file>
+        <file>icon/inkbottle.png</file>
+        <file>icon/line.png</file>
+        <file>icon/line1.png</file>
+        <file>icon/line2.png</file>
+        <file>icon/line3.png</file>
+        <file>icon/line4.png</file>
+        <file>icon/line5.png</file>
+        <file>icon/line6.png</file>
+        <file>icon/nocolor.png</file>
+        <file>icon/polygon.png</file>
+        <file>icon/polyline.png</file>
+        <file>icon/rotateblack.png</file>
+        <file>icon/rotatemouseicon.png</file>
+        <file>icon/save.png</file>
+        <file>icon/scale.png</file>
+        <file>icon/showline.png</file>
+        <file>icon/x.png</file>
+    </qresource>
+</RCC>

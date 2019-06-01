@@ -9,10 +9,10 @@ import pickle
 class Pline(PnonCloseShape):
     def __init__(self, *args):
         super().__init__()
-        if len(args) == 0:
-            self.shapeType = SH_LINE
-        else:
-            line=args[0]
+        self.shapeType = SH_LINE
+        self.l = QLine()
+        if len(args) != 0:
+            line = args[0]
             self.l = line.l
             self.shapeType = SH_LINE
             self.pen = line.pen
@@ -82,6 +82,8 @@ class Pline(PnonCloseShape):
         return rect.contains(self.l.pl()) and rect.contains(self.l.p2())
 
     def translate(self, size):
+        if isinstance(size, QSize):
+            size = QPoint(size.width(), size.height())
         self.l.translate(size)
         self.updatePath()
 

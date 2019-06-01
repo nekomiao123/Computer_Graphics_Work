@@ -9,9 +9,9 @@ import pickle
 class Ppoliline(PnonCloseShape):
     def __init__(self, *args):
         super().__init__()
-        if len(args) == 0:
-            self.shapeType = SH_POLYLINE
-        else:
+        self.pointArray = []
+        self.shapeType = SH_POLYLINE
+        if len(args) != 0:
             polyline = args[0]
             self.pointArray = polyline.pointArray
             self.pen = polyline.pen

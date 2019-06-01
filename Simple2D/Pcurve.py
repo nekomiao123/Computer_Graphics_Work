@@ -9,11 +9,12 @@ import pickle
 class Pcurve(PnonCloseShape):
     def __init__(self, *args):
         super().__init__()
-        if len(args) == 0:
-            self.shapeType = SH_CURVE
-            self.changed = True
-            self.isAdjusting = False
-        else:
+        self.shapeType = SH_CURVE
+        self.changed = True
+        self.isAdjusting = False
+        self.pointArray = []
+        self.rectArray = []
+        if len(args) != 0:
             curve = args[0]
             self.pen = curve.pen
             self.isVisible = curve.isVisible
@@ -25,30 +26,6 @@ class Pcurve(PnonCloseShape):
             self.gravity = curve.gravity
             self.rectArray = curve.rectArray
             self.path = curve.path
-
-
-
-    # 序列化函数
-    def serialize(self, data):
-        super().serialize(data)
-        data << self.pointArray
-        data << self.rectArray
-
-    # 反序列化函数
-    def desSerialize(self, data):
-        data >> self.pointArray
-        data >> self.rectArray
-
-    # 左移<<
-    def __lshift__(self, data, pshape):
-        pshape.serialize(data)
-        return data
-
-    # 右移>>
-    def __rshift__(self, data, pshape):
-        pshape.disSerialize(data)
-        return data
-
 
     def addPointint(self, point):
         if len(self.pointArray) == 0:   #添加第一个点
@@ -204,4 +181,24 @@ class Pcurve(PnonCloseShape):
             path1.cubicTo(self.pointArray[3 * i], self.pointArray[3 * i + 1], self.pointArray[3 * i + 2])
             #三个一组，不包括开头和结尾
 
-    
+    # 序列化函数
+    def serialize(self, data):
+        super().serialize(data)
+        data << self.pointArray
+        data << self.rectArray
+
+    # 反序列化函数
+    def desSerialize(self, data):
+        data >> self.pointArray
+        data >> self.rectArray
+
+    # 左移<<
+    def __lshift__(self, data, pshape):
+        pshape.serialize(data)
+        return data
+
+    # 右移>>
+    def __rshift__(self, data, pshape):
+        pshape.disSerialize(data)
+        return data
+
