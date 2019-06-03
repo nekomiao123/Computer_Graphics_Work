@@ -27,7 +27,7 @@ class Pcurve(PnonCloseShape):
             self.rectArray = curve.rectArray
             self.path = curve.path
 
-    def addPointint(self, point):
+    def addPoint(self, point):
         if len(self.pointArray) == 0:   #添加第一个点
             self.pointArray.append(point)
             self.rectArray.append(QRect(point.x()-5, point.y()-5, 10, 10))
@@ -45,6 +45,13 @@ class Pcurve(PnonCloseShape):
             self.pointArray.append(point)
             self.rectArray.append(QRect(point.x()-5, point.y()-5, 10, 10))
             #添加两次？？？
+
+        self.isAdjusting = True
+        self.changed = True
+        self.updatePath()
+        for i in range(len(self.pointArray)):
+            print (self.pointArray[i])
+        print("    ")
 
     def getRelativePoint(self, ptSrc, ptOrg):
         pt = QPoint()
@@ -78,11 +85,12 @@ class Pcurve(PnonCloseShape):
                 return i
         return -1
 
-    def getAllContrlRect(self):        return self.rectArray
+    def getAllContrlRect(self):        
+        return self.rectArray
 
     def ptOnShape(self, point):
         #用gravity/2的间隔在曲线上取点，然后用圆形范围判断
-        len = len(self.path)
+        len_ = self.path.length()
         p = QPointF()
         i = 0.0
         while(i < 1.0):
@@ -90,17 +98,17 @@ class Pcurve(PnonCloseShape):
             p = p - point
             if QPointF.dotProduct(p, p) < self.gravity * self.gravity:
                 return True
-            i += self.gravity / (2 * len)
+            i += self.gravity / (2 * len_)
             #沿曲线前进
         return False
-
+    
     def isInRect(self, rect):
-        return self.path.boundingRect().contains(rect)
+        return self.path.boundingRect().contains(QRectF(rect))
 
     def translate(self,size):
         if isinstance(size, QSize):
             size = QPoint(size.width(), size.height())
-        self.pointArray=QPolygon(self.pointArray).translate(size)
+        self.pointArray=QPolygon(self.pointArray).translated(size)
         self.updatePath()
 
     def scaleM(self, S):
@@ -180,6 +188,7 @@ class Pcurve(PnonCloseShape):
         for i in range(1, int((len(self.pointArray) + 2) / 3)):
             path1.cubicTo(self.pointArray[3 * i], self.pointArray[3 * i + 1], self.pointArray[3 * i + 2])
             #三个一组，不包括开头和结尾
+        self.path = path1
 
     # 序列化函数
     def serialize(self, data):

@@ -9,6 +9,7 @@ from PCloseShape import *
 from PnonCloseShape import *
 from history import *
 from PropertyPannel import *
+import string
 
 CH_PEN    = 1
 CH_BRUSH  = 2
@@ -21,7 +22,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
     newOperation = pyqtSignal()
     def __init__(self):
         super().__init__()
-        self.queue = queue.Queue(0)  #队列大小没有限制
+        self.queue = queue.Queue()  #队列大小没有限制
         self.rect = QRect()
         self.origin = 5
         self.pen = QPen()
@@ -155,23 +156,16 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
 
     def on_pushButton_apply_clicked(self):
         i = 0
-        ok = True
         if self.radioButton_translation.isChecked():
             if len(self.lineEdit_dx.text())==0:
                 dx=0.0
             else:
-                dx = self.lineEdit_dx.text().toDouble(ok)
-                if not ok:
-                    QMessageBox.about(None,"警告","请填入合法输入！")
-                    return
+                dx = float(self.lineEdit_dx.text())
                 
             if len(self.lineEdit_dy.text())==0:
                 dy = 0.0 
             else:
-                dy = self.lineEdit_dy.text().toDouble(ok)
-                if not ok:
-                    QMessageBox.about(None,"警告","请填入合法输入！")
-                    return
+                dy = float(self.lineEdit_dy.text())
                 
             self.moveSize.setWidth(dx)
             self.moveSize.setHeight(dy)
@@ -182,19 +176,13 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
             if len(self.lineEdit_sx.text())==0:
                 sx=1.0
             else:
-                sx = self.lineEdit_sx.text().toDouble(ok)
-                if not ok:
-                    QMessageBox.about(None,"警告","请填入合法输入！")
-                    return
+                sx = float(self.lineEdit_sx.text())
                 
             
             if len(self.lineEdit_sy.text())==0:
                 sy=1.0
             else:
-                sy=self.lineEdit_sy.text().toDouble(ok)
-                if not ok:
-                    QMessageBox.about(None,"警告","请填入合法输入！")
-                    return
+                sy=float(self.lineEdit_sy.text())
                 
             
             self.scaleSize.setWidth(sx)
@@ -207,10 +195,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
             if len(self.lineEdit_dthea.text())==0:
                 thate=0.0
             else:
-                thate=self.lineEdit_dthea.text().toDouble(ok)
-                if not ok:
-                    QMessageBox.about(None,"警告","请填入合法输入！")
-                    return
+                thate=float(self.lineEdit_dthea.text())
                 
                 self.rotateTheta=thate
             i = i+1
@@ -395,17 +380,17 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
         self.lineEdit_linewidth.setText(str(value))
         self.pen.setWidth(value)
 
-        self.isIconChange[3]=true
+        self.isIconChange[3]=True
         self.update()
 
         self.queue.put(CH_PEN)
         self.newOperation.emit()
     def on_pushButton_getpencolor_clicked(self):
         color = QColor()
-        color=QColorDialog.getColor()
+        color = QColorDialog.getColor()
         self.pen.setColor(color)
-        self.pushButton_getpencolor.setPalette(color)
-
+        self.pushButton_getpencolor.setPalette(QPalette(color))
+        
         self.isIconChange[3]=True
         self.isIconChange[0]=True
         self.repaint()
@@ -415,12 +400,12 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
 
     def on_lineEdit_linewidth_textChanged(self,arg1):
         ok = False
-        if arg1.isEmpty():
+        if len(arg1):
             return
-        value=arg1.toInt(ok,10)
-
+        value = arg1.toInt(ok,10)
+        #value = int(arg1)
         if (not ok) or (value>self.horizontalSlider.maximum()) or (value<1):
-            self.lineEdit_linewidth.setText(str(pen.width()))
+            self.lineEdit_linewidth.setText(str(self.pen.width()))
         
         else:
             self.pen.setWidth(value)
@@ -433,6 +418,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
             self.newOperation.emit()
 
     def on_comboBox_2_currentIndexChanged(self,index):
+        #print(1)
         if index == 0:
             self.brush.setStyle(Qt.NoBrush)
         elif index == 1:
@@ -463,17 +449,21 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
             self.brush.setStyle(Qt.FDiagPattern)
         elif index == 14:
             self.brush.setStyle(Qt.DiagCrossPattern)
+        #print(2)
         self.isIconChange[2] = True
         self.repaint()
+        #print(3)
         self.queue.put(CH_BRUSH)
+        #print(4)
         self.newOperation.emit()
+        #print(5)
     def on_pushButton_getbrushcorol_clicked(self):
         if self.comboBox_2.currentIndex()==0:
             return
         color = QColor()
         color=QColorDialog.getColor()
         self.brush.setColor(color)
-        self.isIconChange[1]=true
+        self.isIconChange[1]=True
         self.repaint()
         self.queue.put(CH_BRUSH)
         self.newOperation.emit()

@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from simple2ddoc import *
+from history import *
 
 TOOL_NO       = 0
 TOOL_SELECT   = 1
@@ -19,6 +20,7 @@ TOOL_POT      = 10
 TOOL_STRAW    = 11
 TOOL_SCARE    = 12
 TOOL_ROTATE   = 13
+
 
 OP_SHOW		=	1	#显示和隐藏图形，用于绘制和删除操作
 OP_SELECT	=	2	#选取图形
@@ -53,8 +55,8 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         connect(ui->widget,SIGNAL(strawColorGet(QColor)),this,SLOT(updataStrawColor(QColor)));
         connect(ui->dockWidget_3,&QDockWidget::visibilityChanged,this,&MainWindow::toolBoxCloseShow);
         '''
-        #self.widget.strawColorGet.connect(self.updataStrawColor(QColor))
-        #self.dockWidget_3.visibilityChanged.connect(self.toolBoxCloseShow)
+        self.widget.strawColorGet.connect(self.updataStrawColor)
+        self.dockWidget_3.visibilityChanged.connect(self.toolBoxCloseShow)
         self.updataStrawColor(QColor(Qt.black))
         self.toolUsing = 0
         self.filePath = ""
@@ -72,7 +74,7 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.Button_potcolor.setIcon(QIcon(img))
 
     def toolBoxCloseShow(self,v):
-        if V:
+        if v:
             self.action_toolbox.setChecked(True)
         else:
             self.action_toolbox.setChecked(False)
@@ -91,7 +93,7 @@ class MainWidget(QMainWindow,Ui_MainWindow):
     def on_action_save_triggered(self): #菜单保存
         self.proNeedSave()
         if self.hasProgram==1:
-            Simple2DDoc.saveToDoc(self.widget.getShapeList(),self.profile)
+            Simple2DDoc.saveToDoc(self.widget.getShapeList(),self.profile[0])
             QMessageBox.information(None,"保存成功","工程已保存！")
             self.hasProgram=2
             return
@@ -101,8 +103,8 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         filename=QFileDialog.getSaveFileName(None,"保存","文档/program.SPD","Simple2D Project Fill(*.SPD)")
         if len(filename)==0:
             return
-        Simple2DDoc.saveToDoc(self.widget.getShapeList(),filename)
-        QMessageBox.information(None,"保存成功","工程已保存到"+filename)
+        Simple2DDoc.saveToDoc(self.widget.getShapeList(),filename[0])
+        QMessageBox.information(None,"保存成功","工程已保存到"+filename[0])
         self.profile=filename
         self.hasProgram=2
 
@@ -114,11 +116,13 @@ class MainWidget(QMainWindow,Ui_MainWindow):
                 self.on_action_save_triggered()    
         self.hasProgram = 2
 
+        
         filename=QFileDialog.getOpenFileName(None,"选择工程","文档/program.SPD","Simple2D Project Fill(*.SPD)")
+        print (filename[0])
         if len(filename)==0:
             return
         self.on_action_close_triggered()
-        self.widget.anotherProgram(Simple2DDoc.readDoc(filename))
+        self.widget.anotherProgram(Simple2DDoc.readDoc(filename[0]))
         self.profile=filename
         self.hasProgram=2
     #这个可能有问题
@@ -447,6 +451,7 @@ class MainWidget(QMainWindow,Ui_MainWindow):
     def on_Button_lnkcolor_clicked(self):#选择墨水瓶描绘颜色
         color = QColor()
         color=QColorDialog.getColor(self.widget.getLnkColor(),None,"选择墨水瓶颜色")
+        #print("test")
         pix = QPixmap(self.Button_lnkcolor.iconSize())
         pt = QPainter()
         pt.begin(pix)
@@ -516,7 +521,7 @@ class MainWidget(QMainWindow,Ui_MainWindow):
     def on_action_use_triggered(self):
         QMessageBox.about(None,"使用","本软件是基于图元管理系统实现的简单作图系统,使用直线、折线、曲线、多边形、矩形、椭圆6种图元进行设计\r\n"
                                     "使用方法是模仿Photoshop、Flash等经典制图软件实现的,使用者不需要更改自己的使用习惯即可上手此软件\r\n")
-        
+        print("a")
 
     def on_action_about_triggered(self):
         QMessageBox.about(None,"关于",
@@ -564,15 +569,15 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         b.setColor(Qt.black)
         self.widget.setBrushUsing(b)
         p = QPen()
-        p=self.widget.getPenUsing()
+        p = self.widget.getPenUsing()
+        #QColor.setRgb(0,0,0)
+        #p.setRgb(0,0,0)
         p.setColor(Qt.black)
         self.widget.setPenUsing(p)
         self.widget.setLnkColor(QColor(Qt.black))
         self.widget.setPenUsing(QColor(Qt.black))
-
     def on_Button_defaultcolor_clicked(self):
         self.on_action_default_color_triggered()
-
     def on_action_toolbar_triggered(self):
         pass
 

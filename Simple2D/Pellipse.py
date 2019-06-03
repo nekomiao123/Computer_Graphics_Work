@@ -56,14 +56,14 @@ class Pellipse(Prectangle):
         return other
 
     def ptOnShape(self, point):
-        if self.brush.Style() != Qt.NoBrush:
+        if self.brush.style() != Qt.NoBrush:
             return self.path.contains(point)
         path1 = QPainterPath()
         path2 = QPainterPath()
 
-        path1.addEllipse(QRect(QPoint(self.getRect().left() - self.gravity, self.getRect().top() - self.gravity),
+        path1.addEllipse(QRectF(QPoint(self.getRect().left() - self.gravity, self.getRect().top() - self.gravity),
                                QPoint(self.getRect().right() + self.gravity, self.getRect().bottom() + self.gravity)))
-        path2.addEllipse(QRect(QPoint(self.getRect().left() + self.gravity, self.getRect().top() + self.gravity),
+        path2.addEllipse(QRectF(QPoint(self.getRect().left() + self.gravity, self.getRect().top() + self.gravity),
                                QPoint(self.getRect().right() - self.gravity, self.getRect().bottom() - self.gravity)))
         return path1.contains(point) ^ path2.contains(point)  # 判断点是否在两个椭圆形成的圆环内
 

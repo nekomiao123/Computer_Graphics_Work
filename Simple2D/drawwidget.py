@@ -42,8 +42,6 @@ class DrawWidget(QWidget):
         self.penUsing=QPen()
         self.brushUsing=QBrush()
         self.controlRect=[]#选择框的控制点
-        """不太懂，对应drawwidget.h111行"""
-        #self.temp=self.setControlRect(r)
         self.mouseclick=False
         self.rotateCircleCenter=QPoint()
         self.rotateCircleCenterOld=QPoint()
@@ -58,26 +56,25 @@ class DrawWidget(QWidget):
         self.scaleCenter=QPoint()
         self.sx=0.0
         self.sy=0.0
-        """不懂，.h151行"""
-        #DMShape *copyFromDMShape(DMShape * s)
         self.copyList=[]
         self.oldPosCopy=QPoint()
         self.mousePos=QPoint()
         self.pshapeList=[]
+        self.hist.shapeList = self.pshapeList
         self.isDriectional=False
         self.PRPN=PropertyPannel()
-        """self.PRPN.hide()"""
-#        self.PRPN.newOperation.connect(self.doOpFromAtt())
+        self.PRPN.hide()
+        self.PRPN.newOperation.connect(self.doOpFromAtt)
         self.tool=0
         """Qt定义位空指针"""
-        self.PR=Prectangle()
-        self.PC=Pcurve()
-        self.PL=Pline()
-        self.PE=Pellipse()
-        self.PPG=Ppolygon()
-        self.PPL=Ppoliline()
-        self.pointShape=Pshape()#点选择的图元
-        self.pointShapeShow=Pshape()
+        self.PR=None
+        self.PC=None
+        self.PL=None
+        self.PE=None
+        self.PPG=None
+        self.PPL=None
+        self.pointShape=None#点选择的图元
+        self.pointShapeShow=None
         self.potColor=QColor(Qt.black)
         self.lnkColor=QColor(Qt.black)
         self.strawColorGet.emit(self.potColor)
@@ -142,7 +139,7 @@ class DrawWidget(QWidget):
                              self.rotateIconBlack)
         if self.tool==TOOL_SCARE and self.selectMode:
             for i in range(len(self.controlRect)):
-                pt.drawPolygon(self.controlRect[i])
+                pt.drawRect(self.controlRect[i])
         """Qt空指针的类型不知道是不是None"""
         #矩形工具用蓝色实线画还没有完成的矩形
         if self.tool==TOOL_RECT and self.PR !=None:
@@ -175,7 +172,6 @@ class DrawWidget(QWidget):
             self.selectPshapeShow[i].draw(pt)
     def mouseMoveEvent(self, QMouseEvent):
         pos=QMouseEvent.pos()
-        """"未实现setCursorPosition函数"""
         self.PRPN.setCursorPosition(pos)
         if self.tool==TOOL_SELECT and self.selectMode:
             if self.selectRect.contains(QMouseEvent.pos()):
@@ -208,7 +204,8 @@ class DrawWidget(QWidget):
         elif self.tool==TOOL_ROTATE:
             if QPoint.dotProduct(self.rotateCircleCenter-pos,self.rotateCircleCenter-pos)<400:
                 self.mouseOnRotateIcon=True
-                self.setCursor(QPixmap("//icon/rotatemouseicon.png"))
+                
+                self.setCursor(QCursor(QPixmap("//icon/rotatemouseicon.png")))
             else:
                 self.mouseOnRotateIcon=False
                 self.setCursor(Qt.ArrowCursor)
@@ -232,9 +229,10 @@ class DrawWidget(QWidget):
             if self.moving:
                 if len(self.selectPshape)!=0:
                     shape=Pshape()
+                    '''
                     for i in range(len(self.selectPshapeShow)):
                         """Qt中用delete，网上说释放内存不改变内容"""
-                        del self.selectPshapeShow[i]
+                        del self.selectPshapeShow[i]'''
                     self.selectPshapeShow.clear()
                     for i in range(len(self.selectPshape)):
                         shape=self.copyFromPshape(self.selectPshape[i])
@@ -258,7 +256,7 @@ class DrawWidget(QWidget):
                 self.rotateThate=nowThate
                 shape=Pshape()
                 c=self.selectRect.center()
-                if len(self.selectPshapeShow)!=0:
+                if len(self.selectPshape)!=0:
                     for i in range(len(self.selectPshapeShow)):
                         """同样del"""
                         del self.selectPshapeShow[i]
@@ -277,9 +275,9 @@ class DrawWidget(QWidget):
                 mat1=mat
                 """"这里没有点出来x，和y"""
                 mat.translate(-self.selectRect.center().x(),-self.selectRect.center().y())
-                mat1.rotate(nowThate+90,c)
+                mat1.rotate(nowThate+90)
                 mat=mat*mat1
-                mat1.setMatrix(1,0,0,1,0,0)
+                mat1.setMatrix(1,0,0, 0,1,0, 0,0,1)
                 mat1.translate(self.selectRect.center().x(),self.selectRect.center().y())
                 mat=mat*mat1
                 """不能点出map"""
@@ -316,7 +314,7 @@ class DrawWidget(QWidget):
                     for i in range(len(self.selectPshapeShow)):
                         del self.selectPshapeShow[i]
                     self.selectPshapeShow.clear()
-                    for i in range(self.selectPshape):
+                    for i in range(len(self.selectPshape)):
                         shape=self.copyFromPshape(self.selectPshape[i])
                         shape.translate(self.scaleRect.topLeft()-self.selectRect.topLeft())
                         shape.scale(self.sx,self.sy,psc)
@@ -342,7 +340,7 @@ class DrawWidget(QWidget):
         elif self.tool==TOOL_RECT:
             self.PR.setBottomRight(QMouseEvent.pos(),self.isDriectional)
         elif self.tool==TOOL_ELLIPSE:
-            self.PE.setBottomRight(QMouseEvent.pos())
+            self.PE.setBottomRight(QMouseEvent.pos(),self.isDriectional)
         elif self.tool==TOOL_LINE:
             self.PL.setEnd(QMouseEvent.pos(),self.isDriectional)
         elif self.tool==TOOL_POLYLINE:
@@ -367,9 +365,10 @@ class DrawWidget(QWidget):
                 self.posMousePress=event.pos()
             else:
                 if len(self.selectPshape)!=0:
+                    '''
                     for i in range(len(self.selectPshapeShow)):
                         """同样del"""
-                        del self.selectPshapeShow[i]
+                        del self.selectPshapeShow[i]'''
                     self.selectPshape.clear()
                     self.selectPshapeShow.clear()
                 if not self.pointShape:
@@ -489,7 +488,7 @@ class DrawWidget(QWidget):
             self.PR.brush = self.brushUsing
         elif self.tool==TOOL_ELLIPSE:
             self.PE = Pellipse()
-            self.shapeList.append(self.PE)
+            self.pshapeList.append(self.PE)
             self.PE.setTopLeft(event.pos())
             self.PE.pen = self.penUsing
             self.PE.brush = self.brushUsing
@@ -502,23 +501,23 @@ class DrawWidget(QWidget):
             """空指针用None代替"""
             if self.PPL == None:
                 self.PPL=Ppoliline()
-                self.shapeList.append(self.PPL)
+                self.pshapeList.append(self.PPL)
                 self.PPL.addPoint(event.pos())
                 self.PPL.pen=self.penUsing
             self.PPL.addPoint(event.pos())
         elif self.tool==TOOL_POLYGON:
             if self.PPG == None:
                 self.PPG=Ppolygon()
-                self.shapeList.append(self.PPG)
+                self.pshapeList.append(self.PPG)
                 self.PPG.addPoint(event.pos())
                 self.PPG.pen=self.penUsing
             self.PPG.addPoint(event.pos())
         elif self.tool==TOOL_CURVE:
             if self.PC == None:
-                    self.PC =Pcurve()
-                    self.shapeList.append(self.PC)
-                    self.PC.addPoint(event.pos())
-                    self.PC.pen = self.penUsing
+                self.PC =Pcurve()
+                self.pshapeList.append(self.PC)
+                self.PC.addPoint(event.pos())
+                self.PC.pen = self.penUsing
             else:
                 self.PC.addPoint(event.pos())
         elif self.tool==TOOL_POT:
@@ -536,18 +535,17 @@ class DrawWidget(QWidget):
         if self.tool==TOOL_SELECT:
             if self.moving:
                 self.moving=False
-                """缺少历史类"""
-                # self.hist.operation=OP_TRANSLATE
-                # self.hist.offset=QSize(pos.x()-self.posMousePress.x(),pos.y()-self.posMousePress.y())
-                # if len(self.selectPshape)!=0:
-                #     for i in range(len(self.selectPshape)):
-                #         self.hist.doShape = self.selectPShape[i]
-                #         self.hist.addRecord()
-                #     self.hist.hint.append(len(self.selectPshape))
-                # elif self.pointShape:
-                #     self.hist.doShape = self.pointShape
-                #     self.hist.addRecord()
-                #     self.hist.hint.append(1)
+                self.hist.operation=OP_TRANSLATE
+                self.hist.offset=QSize(pos.x()-self.posMousePress.x(),pos.y()-self.posMousePress.y())
+                if len(self.selectPshape)!=0:
+                    for i in range(len(self.selectPshape)):
+                        self.hist.doShape = self.selectPshape[i]
+                        self.hist.addRecord()
+                    self.hist.hint.append(len(self.selectPshape))
+                elif self.pointShape:
+                    self.hist.doShape = self.pointShape
+                    self.hist.addRecord()
+                    self.hist.hint.append(1)
                 self.selectRect.translate(pos-self.posMousePress)
                 self.selectPoly=QPolygon(self.selectPoly)
             else:
@@ -557,7 +555,7 @@ class DrawWidget(QWidget):
                 if self.selectRect.width()<5 and self.selectRect.height()<5:
                     index=len(self.pshapeList)-1
                     while index>=0:
-                        if self.pshapeListat[index].ptOnShape(pos) and self.pshapeLis[index].isVisible:
+                        if self.pshapeList[index].ptOnShape(pos) and self.pshapeList[index].isVisible:
                             self.hist.operation = OP_SELECT
                             self.hist.isSelect = True
                             self.hist.doShape = self.pshapeList[index]
@@ -604,27 +602,27 @@ class DrawWidget(QWidget):
         elif self.tool==TOOL_SCARE:
             if self.scaling:
                 """缺少历史类"""
-                # self.scaling=False
-                # self.hist.origin = self.scaleRect.topLeft()
-                # self.hist.Sx = self.sx
-                # self.hist.Sy = self.sy
-                # poi = self.scaleRect.topLeft() - self.selectRect.topLeft()
-                # self.hist.offset = QSize(poi.x(), poi.y())
-                # if len(self.selectPshape)!=0:
-                #     for i in range(len(self.selectPshape)):
-                #         self.hist.operation = OP_TRANSLATE
-                #         self.hist.doShape = self.selectPshape[i]
-                #         self.hist.addRecord()
-                #         self.hist.operation = OP_SCALE
-                #         self.hist.addRecord()
-                #     self.hist.hint.append(len(self.selectPshape) * 2)
-                # elif self.pointShape:
-                #     self.hist.operation = OP_TRANSLATE
-                #     self.hist.doShape = self.pointShape
-                #     self.hist.addRecord()
-                #     self.hist.operation = OP_SCALE
-                #     self.hist.addRecord()
-                #     self.hist.hint.append(2)
+                self.scaling=False
+                self.hist.origin = self.scaleRect.topLeft()
+                self.hist.Sx = self.sx
+                self.hist.Sy = self.sy
+                poi = self.scaleRect.topLeft() - self.selectRect.topLeft()
+                self.hist.offset = QSize(poi.x(), poi.y())
+                if len(self.selectPshape)!=0:
+                    for i in range(len(self.selectPshape)):
+                        self.hist.operation = OP_TRANSLATE
+                        self.hist.doShape = self.selectPshape[i]
+                        self.hist.addRecord()
+                        self.hist.operation = OP_SCALE
+                        self.hist.addRecord()
+                    self.hist.hint.append(len(self.selectPshape) * 2)
+                elif self.pointShape:
+                    self.hist.operation = OP_TRANSLATE
+                    self.hist.doShape = self.pointShape
+                    self.hist.addRecord()
+                    self.hist.operation = OP_SCALE
+                    self.hist.addRecord()
+                    self.hist.hint.append(2)
                 self.selectRect=self.scaleRect
                 self.controlRect=self.setControlRect(self.selectRect)
             else:
@@ -634,7 +632,7 @@ class DrawWidget(QWidget):
                 if self.selectRect.width() < 5 and self.selectRect.height() < 5:
                     index=len(self.pshapeList)-1
                     while index>=0:
-                        if self.pshapeListat[index].ptOnShape(pos) and self.pshapeLis[index].isVisible:
+                        if self.pshapeList[index].ptOnShape(pos) and self.pshapeList[index].isVisible:
                             self.hist.operation = OP_SELECT
                             self.hist.isSelect = True
                             self.hist.doShape = self.pshapeList[index]
@@ -699,19 +697,19 @@ class DrawWidget(QWidget):
                 if self.selectRect.width() < 5 and self.selectRect.height() < 5:
                     index = len(self.pshapeList) - 1
                     while index >= 0:
-                        if self.pshapeListat[index].ptOnShape(pos) and self.pshapeLis[index].isVisible:
-                            # self.hist.operation = OP_SELECT
-                            # self.hist.isSelect = True
-                            # self.hist.doShape = self.pshapeList[index]
-                            # self.selectPshape.append(self.pshapeList[index])
-                            # self.hist.addRecord()
-                            # self.hist.hint.append(1)
-                            # hadShapeSelected = True
-                            # self.pointShape = self.pshapeList[index]
-                            # self.selectRect = self.pointShape.getBoundingRect()
-                            # self.PRPN.setSelectRect(self.selectRect)
-                            # self.selectPoly = QPolygon(self.selectRect)
-                            # self.controlRect = self.setControlRect(self.selectRect)
+                        if self.pshapeList[index].ptOnShape(pos) and self.pshapeList[index].isVisible:
+                            self.hist.operation = OP_SELECT
+                            self.hist.isSelect = True
+                            self.hist.doShape = self.pshapeList[index]
+                            self.selectPshape.append(self.pshapeList[index])
+                            self.hist.addRecord()
+                            self.hist.hint.append(1)
+                            hadShapeSelected = True
+                            self.pointShape = self.pshapeList[index]
+                            self.selectRect = self.pointShape.getBoundingRect()
+                            self.PRPN.setSelectRect(self.selectRect)
+                            self.selectPoly = QPolygon(self.selectRect)
+                            self.controlRect = self.setControlRect(self.selectRect)
                             break
                         index -= 1
                     if hadShapeSelected:
@@ -765,7 +763,7 @@ class DrawWidget(QWidget):
             self.hist.addRecord()
             self.PR =None
         elif self.tool==TOOL_ELLIPSE:
-            self.PE.setBottomRight(event.pos())
+            self.PE.setBottomRight(event.pos(),self.isDriectional)
             self.hist.operation = OP_SHOW
             self.hist.doShape = self.PE
             self.hist.visible = True
@@ -782,7 +780,7 @@ class DrawWidget(QWidget):
             self.PL = None
         elif self.tool==TOOL_POLYLINE:
             if self.PPL:
-                self.PPL.setLastPoint(event.pos)
+                self.PPL.setLastPoint(event.pos())
         elif self.tool==TOOL_POLYGON:
             if self.PPG:
                 self.PPG.setLastPoint(event.pos())
@@ -864,11 +862,11 @@ class DrawWidget(QWidget):
             self.selectMode = False
             self.selectPoly = QPolygon(self.selectRect)
         if self.tool == TOOL_INK:
-            self.setCursor(self.lnkMouseIcon)
+            self.setCursor(QCursor(self.lnkMouseIcon))
         elif self.tool == TOOL_POT:
-            self.setCursor(self.potMouseIcon)
+            self.setCursor(QCursor(self.potMouseIcon))
         elif self.tool == TOOL_STRAW:
-            self.setCursor(self.strawMouseIcon)
+            self.setCursor(QCursor(self.strawMouseIcon))
         else:
             self.setCursor(Qt.ArrowCursor)
         self.update()
@@ -879,17 +877,18 @@ class DrawWidget(QWidget):
         self.tool = 0
     def anotherProgram(self,shape):
         self.closeProgram()
-        self.shapeList = shape
+        self.pshapeList = shape
         self.hist.shapeList = shape
         self.update()
     def doOpFromAtt(self):
         p=Pshape()
         while not self.PRPN.queueIsEmpty():
-            if self.PRPN.nextOperation()==CH_PEN:
+            temp = self.PRPN.nextOperation()
+            if temp == CH_PEN:
                 self.penUsing = self.PRPN.getPen()
-            elif self.PRPN.nextOperation()==CH_BRUSH:
+            elif temp == CH_BRUSH:
                 self.brushUsing = self.PRPN.getBrush()
-            elif self.PRPN.nextOperation()==CH_MOVE:
+            elif temp == CH_MOVE:
                 if self.tool == TOOL_SELECT:
                     k = 0
                     for i in range(len(self.pshapeList)):
@@ -901,57 +900,57 @@ class DrawWidget(QWidget):
                             self.hist.addRecord()
                             k+=1
                     self.hist.hint.append(k)
-            elif self.PRPN.nextOperation()==CH_SCALE:
+            elif temp == CH_SCALE:
                 if self.tool == TOOL_SELECT:
                     k = 0
                     for i in range(len(self.pshapeList)):
-                        p=self.shapeList[i]
+                        p=self.pshapeList[i]
                         if p.isVisible and p.isSelected:
                             self.hist.operation=OP_SCALE
                             self.hist.Sx=self.PRPN.getScaleSize().width()
                             self.hist.Sy=self.PRPN.getScaleSize().height()
                             if self.PRPN.getRotareCenter() == QPoint(-1, -1):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=self.getRectR(self.selectRect).topLeft()
                                 else:
                                     self.hist.origin=p.getBoundingRect().topLeft()
                             elif self.PRPN.getRotareCenter() == QPoint(-1, 1):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=self.getRectR(self.selectRect).bottomLeft()
                                 else:
                                     self.hist.origin=p.getBoundingRect().bottomLeft()
                             elif self.PRPN.getRotareCenter() == QPoint(1, 1):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=self.getRectR(self.selectRect).bottomRight()
                                 else:
                                     self.hist.origin=p.getBoundingRect().bottomRight()
                             elif self.PRPN.getRotareCenter() == QPoint(1, -1):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=self.getRectR(self.selectRect).topRight()
                                 else:
                                     self.hist.origin=p.getBoundingRect().topRight()
                             elif self.PRPN.getRotareCenter() == QPoint(0, -1):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=(self.getRectR(self.selectRect).topRight()+self.getRectR(self.selectRect).topLeft()) / 2
                                 else:
                                     self.hist.origin=(p.getBoundingRect().topLeft() + p.getBoundingRect().topRight()) / 2
                             elif self.PRPN.getRotareCenter() == QPoint(-1, 0):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=(self.getRectR(self.selectRect).topLeft()+self.getRectR(self.selectRect).bottomLeft()) / 2
                                 else:
                                     self.hist.origin=(p.getBoundingRect().topLeft() + p.getBoundingRect().bottomLeft()) / 2
                             elif self.PRPN.getRotareCenter() == QPoint(1, 0):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=(self.getRectR(self.selectRect).topRight()+self.getRectR(self.selectRect).bottomRight()) / 2
                                 else:
                                     self.hist.origin=(p.getBoundingRect().topRight() + p.getBoundingRect().bottomRight()) / 2
                             elif self.PRPN.getRotareCenter() == QPoint(0, 1):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=(self.getRectR(self.selectRect).bottomLeft()+self.getRectR(self.selectRect).bottomRight()) / 2
                                 else:
                                     self.hist.origin=(p.getBoundingRect().bottomRight() + p.getBoundingRect().bottomLeft()) / 2
                             elif self.PRPN.getRotareCenter() == QPoint(0, 0):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=self.getRectR(self.selectRect).center()
                                 else:
                                     self.hist.origin=p.getBoundingRect().center()
@@ -959,7 +958,7 @@ class DrawWidget(QWidget):
                             self.hist.addRecord()
                             k+=1
                     self.hist.hint.append(k)
-            elif self.PRPN.nextOperation()==CH_ROTATE:
+            elif temp == CH_ROTATE:
                 if self.tool == TOOL_SELECT:
                     k = 0
                     for i in range(len(self.pshapeList)):
@@ -968,47 +967,47 @@ class DrawWidget(QWidget):
                             self.hist.operation=OP_ROTATE
                             self.hist.theta=self.PRPN.getRotateTheta()
                             if self.PRPN.getRotareCenter() == QPoint(-1, -1):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=self.getRectR(self.selectRect).topLeft()
                                 else:
                                     self.hist.origin=p.getBoundingRect().topLeft()
                             elif self.PRPN.getRotareCenter() == QPoint(-1, 1):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=self.getRectR(self.selectRect).bottomLeft()
                                 else:
                                     self.hist.origin=p.getBoundingRect().bottomLeft()
                             elif self.PRPN.getRotareCenter() == QPoint(1, 1):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=self.getRectR(self.selectRect).bottomRight()
                                 else:
                                     self.hist.origin=p.getBoundingRect().bottomRight()
                             elif self.PRPN.getRotareCenter() == QPoint(1, -1):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=self.getRectR(self.selectRect).topRight()
                                 else:
                                     self.hist.origin=p.getBoundingRect().topRight()
                             elif self.PRPN.getRotareCenter() == QPoint(0, -1):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=(self.getRectR(self.selectRect).topRight()+self.getRectR(self.selectRect).topLeft()) / 2
                                 else:
                                     self.hist.origin=(p.getBoundingRect().topLeft() + p.getBoundingRect().topRight()) / 2
                             elif self.PRPN.getRotareCenter() == QPoint(-1, 0):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=(self.getRectR(self.selectRect).topLeft()+self.getRectR(self.selectRect).bottomLeft()) / 2
                                 else:
                                     self.hist.origin=(p.getBoundingRect().topLeft() + p.getBoundingRect().bottomLeft()) / 2
                             elif self.PRPN.getRotareCenter() == QPoint(1, 0):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=(self.getRectR(self.selectRect).topRight()+self.getRectR(self.selectRect).bottomRight()) / 2
                                 else:
                                     self.hist.origin=(p.getBoundingRect().topRight() + p.getBoundingRect().bottomRight()) / 2
                             elif self.PRPN.getRotareCenter() == QPoint(0, 1):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=(self.getRectR(self.selectRect).bottomLeft()+self.getRectR(self.selectRect).bottomRight()) / 2
                                 else:
                                     self.hist.origin=(p.getBoundingRect().bottomRight() + p.getBoundingRect().bottomLeft()) / 2
                             elif self.PRPN.getRotareCenter() == QPoint(0, 0):
-                                if self.PPRN.isRelation():
+                                if self.PRPN.isRelation():
                                     self.hist.origin=self.getRectR(self.selectRect).center()
                                 else:
                                     self.hist.origin=p.getBoundingRect().center()
@@ -1036,8 +1035,10 @@ class DrawWidget(QWidget):
         v.append( QRect(r.left()-5,r.bottom()-5,10,10))
         v.append(QRect(r.left()-5,r.center().y()-5,10,10))
         return v
+
     def copyFromPshape(self,s):
         r=Pshape()
+        print(s)
         if s.shapeType==SH_LINE:
             self.PL=Pline(s)
             r=self.PL
@@ -1128,7 +1129,7 @@ class DrawWidget(QWidget):
             for i in range(len(self.selectPshape)):
                 self.hist.doShape = self.selectPshape[i]
                 self.hist.addRecord()
-                self.selectPshapeShow.append(self.copyFrompShape(self.selectPshape[i]))
+                self.selectPshapeShow.append(self.copyFromPshape(self.selectPshape[i]))
             self.hist.hint.append(len(self.selectPshape))
         elif not self.pointShape:
             self.hist.doShape = self.pointShape
@@ -1148,17 +1149,17 @@ class DrawWidget(QWidget):
     def actionPaste(self):
         self.hist.operation = OP_SHOW
         self.hist.visible = True
-        shape=Pshape()
+        shape = Pshape()
         if len(self.selectPshape)!=0:
             for i in range(len(self.selectPshape)):
-                shape=self.copyFrompShape(self.selectPshape[i])
+                shape=self.copyFromPshape(self.selectPshape[i])
                 shape.translate(self.mousePos-self.oldPosCopy)
                 self.hist.doShape=shape
                 self.hist.addRecord()
                 self.pshapeList.append(shape)
             self.hist.hint.append(len(self.selectPshape))
         elif not self.pointShape:
-            shape = self.copyFrompShape(self.pointShape)
+            shape = self.copyFromPshape(self.pointShape)
             shape.translate(self.mousePos - self.oldPosCopy)
             self.hist.doShape = shape
             self.hist.addRecord()
@@ -1195,7 +1196,7 @@ class DrawWidget(QWidget):
         imag=self.grab(self.rect()).toImage()
         self.lnkColor=imag.pixelColor(point)
         self.potColor=self.lnkColor
-        self.strawColorGet(self.potColor).emit()
+        self.strawColorGet.emit(self.potColor)
     def setBrushUsing(self,value):
         self.brushUsing=value
     def setPenUsing(self,value):

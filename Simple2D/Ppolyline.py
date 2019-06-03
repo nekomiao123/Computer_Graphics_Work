@@ -25,7 +25,11 @@ class Ppoliline(PnonCloseShape):
     # 序列化函数
     def serialize(self, data):
         super().serialize(data)
-        data << self.pointArray
+        if len(self.pointArray)==0:
+            print("我没有")
+        else:
+            for i in range(len(self.pointArray)):
+                data << QPoint(self.pointArray[i])
 
     # 反序列化函数
     def desSerialize(self, data):
@@ -62,7 +66,7 @@ class Ppoliline(PnonCloseShape):
 
     def ptOnShape(self, point):
         for i in range(1,len(self.pointArray)):
-            if Pshape.ptOnLine(self.pointArray[i-1],self.pointArray[i],point):
+            if self.ptOnLine(self.pointArray[i-1],self.pointArray[i],point):
                 return True
         return False
 
@@ -70,7 +74,7 @@ class Ppoliline(PnonCloseShape):
         return rect.contains(self.path.boundingRect().toRect())
 
     def translate(self, size):
-        self.pointArray = QPolygon(self.pointArray).translate(size)
+        self.pointArray = QPolygon(self.pointArray).translated(size)
         self.updatePath()
 
     def scaleM(self, S):
@@ -85,9 +89,11 @@ class Ppoliline(PnonCloseShape):
         self.pointArray = F.map(QPolygon(self.pointArray))
         self.updatePath()
 
+    
     def updatePath(self):
         path1 = QPainterPath()
-        path1.moveTo(self.pointArray[0])
+        path1.moveTo(QPointF(self.pointArray[0]))
         for i in range(1, len(self.pointArray)):
-            path1.lineTo(self.pointArray[i])
+            path1.lineTo(QPointF(self.pointArray[i]))
         self.path = path1
+        

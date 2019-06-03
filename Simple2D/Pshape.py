@@ -146,7 +146,7 @@ class Pshape(QObject):
         pass
 
     # 根据给定大小进行平移,python的特性决定了只需要写了一个
-    def translate(self):
+    def translate(self,t):
         pass
 
     # 绘制图形
@@ -207,4 +207,4 @@ class Pshape(QObject):
 f1 = Pshape()
 f2 = Pshape()
 f1.penBlueDot = QPen(Qt.blue, 2, Qt.DotLine)
-print(f1.penBlueDot, f2.penBlueDot)
+#print(f1.penBlueDot, f2.penBlueDot)

@@ -178,27 +178,27 @@ class History():
             ptrSC.Sx = self.Sx
             ptrSC.Sy = self.Sy
             ptrSC.origin = self.origin
-            ptrOP = ptrSC
+            ptrOP.operation = ptrSC
         elif self.operation == OP_SELECT:
             ptrSL = HISINFO_SELECT()
             ptrSL.operation = self.operation
             ptrSL.select = self.isSelect
-            ptrOP = ptrSL
+            ptrOP.operation = ptrSL
         elif self.operation == OP_TRACE:
             ptrTRC = HISINFO_TRACE()
             ptrTRC.operation = self.operation
             ptrTRC.pen = self.pen
-            ptrOP = ptrTRC
+            ptrOP.operation = ptrTRC
         elif self.operation == OP_TRANSLATE:
             ptrTR = HISINFO_TRANSLATE()
             ptrTR.operation = self.operation
             ptrTR.offset = self.offset
-            ptrOP = ptrTR
+            ptrOP.operation = ptrTR
         elif self.operation == OP_SHOW:
             ptrSH = HISINFO_SHOW()
             ptrSH.operation = self.operation
             ptrSH.visible = self.visible
-            ptrOP = ptrSH
+            ptrOP.operation = ptrSH
         ptrOP.shape = self.doShape
         self.recoveryList.append(ptrOP)
         self.redo()
@@ -216,14 +216,14 @@ class History():
         self.recoveryList.append(ptrRec)
         #将一步操作从历史记录列表中取出并转移到待恢复记录列表中
 
-        if ptrRec.operation == OP_ADJUST:
+        if ptrRec.operation.operation == OP_ADJUST:
             ptrAD = ptrRec.operation
             ptrRec.shape.isAdjusting = True
             self.oldPosition = ptrRec.shape.getContrlPoint(ptrAD.index)
             ptrRec.shape.adjust(ptrAD.oldPosition, ptrAD.index)
             ptrAD.oldPosition = self.oldPosition
 
-        elif ptrRec.operation == OP_FILL:
+        elif ptrRec.operation.operation == OP_FILL:
             ptrFL = ptrRec.operation
             if ptrRec.shape.shapeType == SH_ELLIPSE or ptrRec.shape.shapeType == SH_RECT or ptrRec.shape.shapeType == SH_POLYGON:
                 ptrShape = ptrRec.shape
@@ -231,7 +231,7 @@ class History():
                 ptrShape.brush=ptrFL.brush
                 ptrFL.brush = self.brush
 
-        elif ptrRec.operation == OP_FLIP:
+        elif ptrRec.operation.operation == OP_FLIP:
             ptrFLP = ptrRec.operation
             ptrRec.shape.flip(ptrFLP.flipType, ptrFLP.origin)
         elif ptrRec.operation == OP_LAYER:
@@ -250,25 +250,25 @@ class History():
             elif ptrLY.layerType == ALT_BOTTOM:
                 ptr = self.shapeList.pop(nowindex)
                 self.shapeList.insert(0, ptr)
-        elif ptrRec.operation == OP_ROTATE:
+        elif ptrRec.operation.operation == OP_ROTATE:
             ptrRT = ptrRec.operation
             ptrRec.shape.rotate(-ptrRT.theta, ptrRT.origin)
-        elif ptrRec.operation == OP_SCALE:
+        elif ptrRec.operation.operation == OP_SCALE:
             ptrSC = ptrRec.operation
             ptrRec.shape.scale(1/ptrSC.Sx, 1/ptrSC.Sy, ptrSC.origin)
-        elif ptrRec.operation == OP_SELECT:
+        elif ptrRec.operation.operation == OP_SELECT:
             ptrSL = ptrRec.operation
             ptrRec.shape.isSelected = not ptrSL.select
-        elif ptrRec.operation == OP_TRACE:
+        elif ptrRec.operation.operation == OP_TRACE:
             ptrTRC = ptrRec.operation
             ptrRec.shape.isAdjusting = False
             self.pen = ptrRec.shape.pen
             ptrRec.shape.pen = ptrTRC.pen
             ptrTRC.pen = self.pen
-        elif ptrRec.operation == OP_TRANSLATE:
+        elif ptrRec.operation.operation == OP_TRANSLATE:
             ptrTR =ptrRec.operation
             ptrRec.shape.translate(QPoint(-ptrTR.offset.width(),-ptrTR.offset.height()))
-        elif ptrRec.operation == OP_SHOW:
+        elif ptrRec.operation.operation == OP_SHOW:
             ptrSH = ptrRec.operation
             ptrRec.shape.isVisible = not ptrSH.visible
         return True
@@ -279,7 +279,7 @@ class History():
         ptrRec = self.recoveryList.pop()
         self.history.append(ptrRec)
         # 将一步操作从待恢复记录列表中取出并转移到历史记录列表中
-
+        
         if ptrRec.operation.operation == OP_ADJUST:
             ptrAD = ptrRec.operation
             ptrRec.shape.isAdjusting = True
@@ -322,7 +322,7 @@ class History():
             ptrTRC.pen = self.pen
         elif ptrRec.operation.operation == OP_TRANSLATE:
             ptrTR = ptrRec.operation
-            ptrRec.shape.tranlate(QPoint(ptrTR.offset.width(), ptrTR.offset.height()))
+            ptrRec.shape.translate(QPoint(ptrTR.offset.width(), ptrTR.offset.height()))
         return True
 
     def clearHistory(self):

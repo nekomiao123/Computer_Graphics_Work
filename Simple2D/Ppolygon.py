@@ -38,7 +38,11 @@ class Ppolygon(PCloseShape):
     # 序列化函数
     def serialize(self, data):
         super().serialize(data)
-        data << self.polygon
+        if len(self.polygon)==0:
+            print("我没有")
+        else:
+            for i in range(len(self.polygon)):
+                data << QPoint(self.polygon[i])
 
     # 反序列化函数
     def desSerialize(self, data):
@@ -59,7 +63,7 @@ class Ppolygon(PCloseShape):
 
     def updatePath(self):
         path1 = QPainterPath()
-        path1.addPolygon(QPolygon(self.polygon))
+        path1.addPolygon(QPolygonF(self.polygon))
         if self.finished:
             path1.lineTo(self.polygon[0])
         self.path = path1
@@ -80,11 +84,11 @@ class Ppolygon(PCloseShape):
         return len(self.polygon)
 
     def ptOnShape(self, point):
-        if self.brush.Style() != Qt.NoBrush:
+        if self.brush.style() != Qt.NoBrush:
             return self.ptInShape(point)
         # 只要点在其中一条线段的引力场范围内，就认为它在多边形上
         for i in range(len(self.polygon)):
-            if self.ptOnLine(self.polygon[i], self.polygon[(i + 1) % self.polygon.length()], point):
+            if self.ptOnLine(self.polygon[i], self.polygon[(i + 1) % len(self.polygon)], point):
                 return True
         return False
 
@@ -94,7 +98,7 @@ class Ppolygon(PCloseShape):
     def isInRect(self, rect):
         return self.rect.contains(self.path.boundingRect().toRect())
 
-    def tranlate(self, size):
+    def translate(self, size):
         self.polygon = QPolygon(self.polygon).translated(size)
         self.updatePath()
 

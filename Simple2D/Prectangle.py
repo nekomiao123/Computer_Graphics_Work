@@ -37,8 +37,7 @@ class Prectangle(PCloseShape):
     # 序列化函数
     def serialize(self, data):
         super().serialize(data)
-        data << self.rect
-
+        data << QRect(self.rect)
     # 反序列化函数
     def desSerialize(self, data):
         super().desSerialize(data)
@@ -113,8 +112,9 @@ class Prectangle(PCloseShape):
     def isInRect(self, Rect):
         return Rect.contains(self.rect)
 
-    def tranlate(self, point):
-        self.rect.tranlate(point)
+    def translate(self, point):
+        self.rect = QRect(self.rect).translated(point)
+        #self.rect.translate(point)
         self.updatePath()
 
     def scaleM(self, S):
@@ -155,9 +155,9 @@ class Prectangle(PCloseShape):
     def updatePath(self):
         self.path = QPainterPath()
         if self.shapeType == SH_RECT:
-            self.path.addRect(self.rect)
+            self.path.addRect(QRectF(self.rect))
         else:
-            self.path.addEllipse(self.rect)
+            self.path.addEllipse(QRectF(self.rect))
 
 
 

@@ -22,7 +22,7 @@ class Simple2DDoc:
         p4=Pcurve()
         p5=Ppolygon
         p6=Ppoliline()
-        for i in len(pshape):
+        for i in range(len(pshape)):
             if not pshape[i].isVisible:
                 continue
             if pshape[i].shapeType==SH_RECT:
@@ -37,22 +37,21 @@ class Simple2DDoc:
             elif pshape[i].shapeType==SH_CURVE:
                 p4=Pcurve(pshape[i])
                 p4.serialize(data)
-            elif pshape[i].shapeType==SH_POLYGON:
-                p5=Ppolygon(pshape[i])
-                p5.serialize(data)
-            elif pshape[i].shapeType==SH_POLYLINE:
-                p6=Ppoliline(pshape[i])
-                p6.serialize(data)
+            # elif pshape[i].shapeType==SH_POLYGON:
+            #     p5=Ppolygon(pshape[i])
+            #     p5.serialize(data)
+            # elif pshape[i].shapeType==SH_POLYLINE:
+            #     p6=Ppoliline(pshape[i])
+            #     p6.serialize(data)
         file.close()
         return fileName
     @staticmethod
-    def readDoc(self,filename):
+    def readDoc(filename):
         ret=[]
         file=QFile(filename)
         file.open(QFileDevice.ReadWrite)
         data=QDataStream(file)
         shap=Pshape()
-
         p1 = Prectangle()
         p2 = Pellipse()
         p3 = Pline()

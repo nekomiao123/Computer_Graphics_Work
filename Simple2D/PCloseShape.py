@@ -10,12 +10,17 @@ class PCloseShape(Pshape):
         super().__init__()
         self.brush = QBrush()
         self.brush.setStyle(Qt.NoBrush)
-
+    #序列化
+    def serialize(self, data):
+        super().serialize(data)
+        data<<QBrush(self.brush)
+    def desSerialize(self,data):
+        data>>QBrush(self.brush)
     def draw(self, pt):
-        if not self.IsVisible:
+        if not self.isVisible:
             return
         pt.save()
-        if self.IsSelected:
+        if self.isSelected:
             pt.setPen(Pshape.penBlueDot)
         else:
             pt.setPen(self.pen)
