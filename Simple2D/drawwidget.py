@@ -1038,7 +1038,7 @@ class DrawWidget(QWidget):
 
     def copyFromPshape(self,s):
         r=Pshape()
-        print(s)
+        #print(s)
         if s.shapeType==SH_LINE:
             self.PL=Pline(s)
             r=self.PL
@@ -1120,6 +1120,8 @@ class DrawWidget(QWidget):
             self.pointShapeShow=self.copyFrompShape(self.pointShape)
             self.update()
     def actionDelete(self):
+        if len(self.selectPshape) == 0:
+            return
         self.hist.operation = OP_SHOW
         self.hist.visible = False
         if len(self.selectPshape) != 0:

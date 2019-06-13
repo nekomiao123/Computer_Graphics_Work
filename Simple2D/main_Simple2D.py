@@ -39,7 +39,6 @@ ALT_DOWN	=  -1	#下移一层
 ALT_BOTTOM	=  -2	#移到最低层
 
 class MainWidget(QMainWindow,Ui_MainWindow):
-    #有点不知道init的槽函数怎么翻译
     strawColorGet=pyqtSignal(QColor)
     def __init__(self,parent=None):
         super().__init__(parent)

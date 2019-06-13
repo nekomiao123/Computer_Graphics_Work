@@ -1,11 +1,6 @@
 import queue
 
 
-
-
-
-
-
 if __name__ == "__main__":
     q = queue.Queue()
     #put是入队，get是出队
@@ -17,3 +12,5 @@ if __name__ == "__main__":
 
     #print(q.get())
     #print(q.empty())
+
+
