@@ -47,7 +47,10 @@ class Ppolygon(PCloseShape):
     # 反序列化函数
     def desSerialize(self, data):
         super().desSerialize(data)
-        data >> self.polygon
+        polygon=None
+        data >> polygon
+        if isinstance(polygon,QPoint):
+            self.polygon.append(polygon)
 
     # 复合赋值位相关运算符重载
     # other对应QDataStream类型，pshape对应Pshape类型
@@ -96,21 +99,23 @@ class Ppolygon(PCloseShape):
         return self.path.contains(point)
 
     def isInRect(self, rect):
-        return self.rect.contains(self.path.boundingRect().toRect())
+        return rect.contains(self.path.boundingRect().toRect())
 
     def translate(self, size):
         self.polygon = QPolygon(self.polygon).translated(size)
         self.updatePath()
 
     def scaleM(self, S):
-        self.polygon = S.map(self.polygon)
+        self.polygon = S.map(QPolygon(self.polygon))
         self.updatePath()
 
     def rotateM(self, R):
-        self.polygon = R.map(self.polygon)
+        self.polygon = R.map(QPolygon(self.polygon))
+        self.updatePath()
 
     def flipM(self, F):
         self.polygon = F.map(QPolygon(self.polygon))
+        self.updatePath()
 
     # 注意，这里有点不一样，不知道为啥
     def getPolygon(self):

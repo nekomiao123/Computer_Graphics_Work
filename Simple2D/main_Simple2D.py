@@ -21,7 +21,6 @@ TOOL_STRAW    = 11
 TOOL_SCARE    = 12
 TOOL_ROTATE   = 13
 
-
 OP_SHOW		=	1	#显示和隐藏图形，用于绘制和删除操作
 OP_SELECT	=	2	#选取图形
 OP_TRANSLATE=	3	#移动图形
@@ -50,10 +49,6 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         #setWindowFlags(windowFlags()&~Qt::WindowMaximizeButtonHint);    # 禁止最大化按钮
         self.setFixedSize(rect.width(),rect.height())    #不能修改窗口大小
         self.widget.resize(self.width()-120,self.height()-180)
-        '''
-        connect(ui->widget,SIGNAL(strawColorGet(QColor)),this,SLOT(updataStrawColor(QColor)));
-        connect(ui->dockWidget_3,&QDockWidget::visibilityChanged,this,&MainWindow::toolBoxCloseShow);
-        '''
         self.widget.strawColorGet.connect(self.updataStrawColor)
         self.dockWidget_3.visibilityChanged.connect(self.toolBoxCloseShow)
         self.updataStrawColor(QColor(Qt.black))
@@ -61,7 +56,6 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.filePath = ""
         self.hasProgram = 0  #0无工程，1未保存，2已保存
         self.profile = ""
-
 
     def updataStrawColor(self,c):
         img = QPixmap(self.Button_lnkcolor.iconSize())
@@ -77,18 +71,20 @@ class MainWidget(QMainWindow,Ui_MainWindow):
             self.action_toolbox.setChecked(True)
         else:
             self.action_toolbox.setChecked(False)
-    
+
+    @pyqtSlot()
     def on_Button_selsct_clicked(self):#工具箱选择按钮
         self.on_action_select_triggered()
 
-    #试着不用QString
+    #防止弹窗两次
+    @pyqtSlot()
     def on_action_save_as_triggered(self):#菜单另存为
         filename=QFileDialog.getSaveFileName(None,"另存为","文档/program.SPD","Simple2D Project Fill(*.SPD)")
         if len(filename)==0:
             return
         Simple2DDoc.saveToDoc(self.widget.getShapeList(),filename)
 
-   
+    @pyqtSlot()
     def on_action_save_triggered(self): #菜单保存
         self.proNeedSave()
         if self.hasProgram==1:
@@ -107,7 +103,7 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.profile=filename
         self.hasProgram=2
 
-
+    @pyqtSlot()
     def on_action_open_triggered(self):#菜单打开项目
         self.proNeedSave()
         if self.hasProgram==1:
@@ -115,16 +111,25 @@ class MainWidget(QMainWindow,Ui_MainWindow):
                 self.on_action_save_triggered()    
         self.hasProgram = 2
 
-        
-        filename=QFileDialog.getOpenFileName(None,"选择工程","文档/program.SPD","Simple2D Project Fill(*.SPD)")
-        print (filename[0])
+        filename=QFileDialog.getOpenFileName(None,"选择工程","文档/program.SPD","Simple2D Project Fill(*.SPD);;PNG(*.png)")
+        #print (filename[0])
         if len(filename)==0:
             return
+        if filename[0][-3:-1]=="pn":
+    
+            pal=self.widget.palette()
+            pal.setColor(QPalette.Background, Qt.black)
+            self.setAutoFillBackground(True)
+            pal.setBrush(QPalette.Window,
+                                   QBrush(QPixmap(filename[0]).scaled(self.widget.size(),Qt.IgnoreAspectRatio,Qt.SmoothTransformation)))
+            self.widget.setPalette(pal)
         self.on_action_close_triggered()
         self.widget.anotherProgram(Simple2DDoc.readDoc(filename[0]))
         self.profile=filename
         self.hasProgram=2
+
     #这个可能有问题
+    @pyqtSlot()
     def on_action_close_triggered(self):#菜单关闭项目
         if self.hasProgram==1 or self.hasProgram==0:
             if QMessageBox.question(None,"是否保存","当前工作尚未保存，是否保存？",QMessageBox.Yes,QMessageBox.No)==QMessageBox.Yes:
@@ -142,9 +147,11 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.hasProgram=0
         self.widget.closeProgram()
         
+    @pyqtSlot()
     def on_action_attribute_panel_triggered(self):#菜单打开属性面板
         self.widget.showAttributepanel()
 
+    @pyqtSlot()
     def on_action_newfile_triggered(self):#菜单打开新工程
         self.on_action_close_triggered()
         self.hasProgram=2   
@@ -152,11 +159,12 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         p = []
         self.widget.setShapeList(p)
 
+    @pyqtSlot()
     def on_action_print_triggered(self):#菜单打印功能
         if not Simple2DDoc.printer(self.widget.getShapeList(),self.widget.size()):
             QMessageBox.information(None,"提示","打印失败！")
 
-
+    @pyqtSlot()
     def on_action_select_triggered(self):#菜单选择工具
         self.widget.setTool(TOOL_SELECT)
         self.Button_rotate.setEnabled(True)
@@ -186,6 +194,7 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.Button_pot.setChecked(False)
         self.Button_straw.setChecked(False)
 
+    @pyqtSlot()
     def on_action_rect_triggered(self):#菜单矩形工具
         self.widget.setTool(TOOL_RECT)
         self.action_ellipse.setChecked(False)
@@ -212,12 +221,15 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.Button_pot.setChecked(False)
         self.Button_straw.setChecked(False)
 
+    @pyqtSlot()
     def on_Button_rect_clicked(self):#工具箱矩形工具
         self.on_action_rect_triggered()
 
+    @pyqtSlot()
     def on_Button_ellipse_clicked(self):#工具箱椭圆工具
         self.on_action_ellipse_triggered()
 
+    @pyqtSlot()
     def on_action_ellipse_triggered(self):#菜单椭圆工具
         self.widget.setTool(TOOL_ELLIPSE)
         self.action_ellipse.setChecked(True)
@@ -244,9 +256,11 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.Button_pot.setChecked(False)
         self.Button_straw.setChecked(False)
 
+    @pyqtSlot()
     def on_Button_line_clicked(self):#工具箱直线工具
         self.on_action_line_triggered()
 
+    @pyqtSlot()
     def on_action_line_triggered(self):#菜单直线工具
         self.widget.setTool(TOOL_LINE)
         self.action_ellipse.setChecked(False)
@@ -273,9 +287,11 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.Button_pot.setChecked(False)
         self.Button_straw.setChecked(False)
 
+    @pyqtSlot()
     def on_Button_polyline_clicked(self):#工具箱折线工具
         self.on_action_broken_line_triggered()
 
+    @pyqtSlot()
     def on_action_broken_line_triggered(self):#菜单折线工具
         self.widget.setTool(TOOL_POLYLINE)
         self.action_ellipse.setChecked(False)
@@ -302,9 +318,11 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.Button_pot.setChecked(False)
         self.Button_straw.setChecked(False)
 
+    @pyqtSlot()
     def on_Button_polygon_clicked(self):#工具箱多边形工具
         self.on_action_polygon_triggered()
 
+    @pyqtSlot()
     def on_action_polygon_triggered(self):#菜单多边形工具
         self.widget.setTool(TOOL_POLYGON)
         self.action_ellipse.setChecked(False)
@@ -331,9 +349,11 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.Button_pot.setChecked(False)
         self.Button_straw.setChecked(False)
 
+    @pyqtSlot()
     def on_Button_curse_clicked(self):#工具箱曲线工具
         self.on_action_curve_triggered()
 
+    @pyqtSlot()
     def on_action_curve_triggered(self):#菜单曲线工具
         self.widget.setTool(TOOL_CURVE)
         self.action_ellipse.setChecked(False)
@@ -360,9 +380,11 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.Button_pot.setChecked(False)
         self.Button_straw.setChecked(False)
 
+    @pyqtSlot()
     def on_Button_pot_clicked(self):#工具箱油漆桶工具
         self.on_action_paint_pot_triggered()
 
+    @pyqtSlot()
     def on_action_paint_pot_triggered(self):#菜单油漆桶工具
         self.widget.setTool(TOOL_POT)
         self.action_ellipse.setChecked(False)
@@ -389,9 +411,11 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.Button_pot.setChecked(True)
         self.Button_straw.setChecked(False)
 
+    @pyqtSlot()
     def on_Button_lnk_clicked(self):#工具箱墨水瓶工具
         self.on_action_ink_bottle_triggered()
 
+    @pyqtSlot()
     def on_action_ink_bottle_triggered(self):#菜单墨水瓶工具
         self.widget.setTool(TOOL_INK)
         self.action_ellipse.setChecked(False)
@@ -418,9 +442,11 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.Button_pot.setChecked(False)
         self.Button_straw.setChecked(False)
 
+    @pyqtSlot()
     def on_Button_straw_clicked(self):#工具箱吸管工具
         self.on_action_straw_triggered()
 
+    @pyqtSlot()
     def on_action_straw_triggered(self):#菜单吸管工具
         self.widget.setTool(TOOL_STRAW)
         self.action_ellipse.setChecked(False)
@@ -447,6 +473,7 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.Button_pot.setChecked(False)
         self.Button_straw.setChecked(True)
 
+    @pyqtSlot()
     def on_Button_lnkcolor_clicked(self):#选择墨水瓶描绘颜色
         color = QColor()
         color=QColorDialog.getColor(self.widget.getLnkColor(),None,"选择墨水瓶颜色")
@@ -458,7 +485,7 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         pt.end()
         self.Button_lnkcolor.setIcon(QIcon(pix))
         self.widget.setLnkColor(color)
-
+    @pyqtSlot()
     def on_Button_potcolor_clicked(self):#选择油漆桶填充颜色
         color = QColor()
         color=QColorDialog.getColor(self.widget.getPotColor(),None,"选择墨水瓶颜色")
@@ -470,9 +497,11 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.Button_potcolor.setIcon(QIcon(pix))
         self.widget.setPotColor(color)
 
+    @pyqtSlot()
     def on_Button_rotate_clicked(self):
         self.on_action_rotate_triggered()
 
+    @pyqtSlot()
     def on_action_rotate_triggered(self):
         self.widget.setTool(TOOL_ROTATE)
         if self.Button_selsct.isChecked():
@@ -480,9 +509,11 @@ class MainWidget(QMainWindow,Ui_MainWindow):
             self.Button_scale.setChecked(False)
             self.Button_scale.setEnabled(False)
 
+    @pyqtSlot()
     def on_Button_scale_clicked(self):
         self.on_action_scale_triggered()
 
+    @pyqtSlot()
     def on_action_scale_triggered(self):
         self.widget.setTool(TOOL_SCARE)
         if self.Button_selsct.isChecked():
@@ -490,78 +521,101 @@ class MainWidget(QMainWindow,Ui_MainWindow):
             self.Button_rotate.setChecked(False)
             self.Button_rotate.setEnabled(False)
 
+    @pyqtSlot()
     def on_action_90_clockwise_triggered(self):
         self.widget.actionRotate(90)
 
+    @pyqtSlot()
     def on_action_90_anti_clockwise_triggered(self):
         self.widget.actionRotate(-90)
 
+    @pyqtSlot()
     def on_action_180rotate_triggered(self):
         self.widget.actionRotate(180)
 
+    @pyqtSlot()
     def on_action_horizontal_flip_triggered(self):
         self.widget.actionFlip(FT_HORIZONTAL)
 
+    @pyqtSlot()
     def on_action_vertical_flip_triggered(self):
         self.widget.actionFlip(FT_VERTICAL)
 
+    @pyqtSlot()
     def on_action_move_top_triggered(self):
         self.widget.actionMove(ALT_TOP)
 
+    @pyqtSlot()
     def on_action_move_up_triggered(self):
         self.widget.actionMove(ALT_UP)
 
+    @pyqtSlot()
     def on_action_move_down_triggered(self):
         self.widget.actionMove(ALT_DOWN)
 
+    @pyqtSlot()
     def on_action_move_bottom_triggered(self):
         self.widget.actionMove(ALT_BOTTOM)
 
+    @pyqtSlot()
     def on_action_use_triggered(self):
         QMessageBox.about(None,"使用","本软件是基于图元管理系统实现的简单作图系统,使用直线、折线、曲线、多边形、矩形、椭圆6种图元进行设计\r\n"
                                     "使用方法是模仿Photoshop、Flash等经典制图软件实现的,使用者不需要更改自己的使用习惯即可上手此软件\r\n")
-        print("a")
-
+    
+    @pyqtSlot()
     def on_action_about_triggered(self):
+    
         QMessageBox.about(None,"关于",
                                     "软件暂定为1.0版本,截至目前软件还有诸多不完善的地方与bug,还请见谅\n\r"
                                     "未实现功能:打印预览、打印设置、窗口大小变换、工具栏与状态栏的隐现……")
 
-
+    @pyqtSlot()
     def on_action_out_image_triggered(self):
-        #这个有问题
-        savefilename=QFileDialog.getSaveFileName(None,"导出为","\home","PNG(*.png)JPEG(*.jpg*.jpeg*.jpe*.jfif)Bitmap(*.bmp)")
-        if not savefilename.isEmpty():
-            Simple2DDoc.saveToImage(self.widget.getShapeList(),self.widget.size(),savefilename)
         
-
+        savefilename=QFileDialog.getSaveFileName(None,"导出为","\home","PNG(*.png);;JPEG(*.jpg*.jpeg*.jpe*.jfif);;Bitmap(*.bmp)")
+        #print(savefilename)
+        #print(savefilename[0])
+        savename = savefilename[0].split('/')
+        #print(savename[-1])
+        if len(savefilename)!=0:
+            Simple2DDoc.saveToImage(self.widget.getShapeList(),self.widget.size(),savefilename[0])
+        
+    @pyqtSlot()
     def on_action_delete_triggered(self):
         self.widget.actionDelete()
-
+        
+    @pyqtSlot()
     def on_action_copy_triggered(self):
         self.widget.actionCopy()
 
+    @pyqtSlot()
     def on_action_shear_triggered(self):
         self.widget.actionCut()
 
+    @pyqtSlot()
     def on_action_paste_triggered(self):
         self.widget.actionPaste()
 
+    @pyqtSlot()
     def on_action_revoke_triggered(self):
         self.widget.revoke()
 
+    @pyqtSlot()
     def on_action_recovery_triggered(self):
         self.widget.recover()
 
+    @pyqtSlot()
     def on_Button_nocolor_clicked(self):
         self.on_action_no_color_triggered()
 
+    @pyqtSlot()
     def on_action_no_color_triggered(self):
         b = QBrush()
         b=self.widget.getBrushUsing()
         b.setStyle(Qt.NoBrush)
         self.widget.setBrushUsing(b)
 
+    @pyqtSlot()
     def on_action_default_color_triggered(self):
         b = QBrush()
         b=self.widget.getBrushUsing()
@@ -575,20 +629,27 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.widget.setPenUsing(p)
         self.widget.setLnkColor(QColor(Qt.black))
         self.widget.setPenUsing(QColor(Qt.black))
+
+    @pyqtSlot()
     def on_Button_defaultcolor_clicked(self):
         self.on_action_default_color_triggered()
+
+    @pyqtSlot()
     def on_action_toolbar_triggered(self):
         pass
-
+        
+    @pyqtSlot()
     def on_action_toolbox_triggered(self):
         if self.dockWidget_3.isHidden():
             self.dockWidget_3.show()
         else:
             self.dockWidget_3.close()
-
+            
+    @pyqtSlot()
     def on_Button_adjust_clicked(self):
         self.on_action_adjust_triggered()
 
+    @pyqtSlot()
     def on_action_adjust_triggered(self):
         self.widget.setTool(TOOL_ADJUST)
         self.action_ellipse.setChecked(False)
@@ -615,9 +676,11 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.Button_pot.setChecked(False)
         self.Button_straw.setChecked(False)
 
+    @pyqtSlot()
     def on_action_print_preview_triggered(self):
         Simple2DDoc.printPreview(self.widget.getShapeList(),self.widget.size())
 
+    @pyqtSlot()
     def on_action_print_set_triggered(self):
         Simple2DDoc.printSet()
 

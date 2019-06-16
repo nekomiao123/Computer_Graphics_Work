@@ -44,14 +44,14 @@ class Pcurve(PnonCloseShape):
             self.rectArray.append(QRect(point.x()-5, point.y()-5, 10, 10))
             self.pointArray.append(point)
             self.rectArray.append(QRect(point.x()-5, point.y()-5, 10, 10))
-            #添加两次？？？
+            #添加两次
 
         self.isAdjusting = True
         self.changed = True
         self.updatePath()
-        for i in range(len(self.pointArray)):
+        '''for i in range(len(self.pointArray)):
             print (self.pointArray[i])
-        print("    ")
+        print("    ")'''
 
     def getRelativePoint(self, ptSrc, ptOrg):
         pt = QPoint()
@@ -98,6 +98,8 @@ class Pcurve(PnonCloseShape):
             p = p - point
             if QPointF.dotProduct(p, p) < self.gravity * self.gravity:
                 return True
+            if len_ == 0:
+                return 
             i += self.gravity / (2 * len_)
             #沿曲线前进
         return False
@@ -193,13 +195,21 @@ class Pcurve(PnonCloseShape):
     # 序列化函数
     def serialize(self, data):
         super().serialize(data)
-        data << self.pointArray
-        data << self.rectArray
+        if len(self.pointArray)!=0:
+            for i in range(self.pointArray):
+                data<<QPoint(self.pointArray[i])
+        if len(self.rectArray)!=0:
+            for i in range(self.rectArray):
+                data<<QRect(self.rectArray)
 
     # 反序列化函数
     def desSerialize(self, data):
-        data >> self.pointArray
-        data >> self.rectArray
+        point=None
+        data >>point
+        if isinstance(point,QPoint):
+            self.pointArray.append(point)
+        if isinstance(point,QRect):
+            self.rectArray.append(point)
 
     # 左移<<
     def __lshift__(self, data, pshape):

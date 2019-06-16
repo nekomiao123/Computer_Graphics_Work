@@ -6,6 +6,7 @@ from Pshape import *
 
 class PnonCloseShape(Pshape):
     def __init__(self):
-        super().__init__()
+        super(PnonCloseShape,self).__init__()
+
 
 

@@ -153,7 +153,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
     def getRotareCenter(self):
         return self.rotareCenter
 
-
+    @pyqtSlot()
     def on_pushButton_apply_clicked(self):
         i = 0
         if self.radioButton_translation.isChecked():
@@ -222,6 +222,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
         if i>0:
             self.newOperation.emit()
 
+    @pyqtSlot()
     def on_radioButton_tl_clicked(self):
         if self.radioButton_tl.isChecked():
             self.radioButton_t.setChecked(False)
@@ -236,6 +237,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
         else:
             self.radioButton_tl.setChecked(not self.radioButton_tl.isChecked())
 
+    @pyqtSlot()
     def on_radioButton_t_clicked(self):
         if self.radioButton_t.isChecked():
             self.radioButton_tl.setChecked(False)
@@ -250,6 +252,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
         else:
             self.radioButton_t.setChecked(not self.radioButton_t.isChecked())
 
+    @pyqtSlot()
     def on_radioButton_tr_clicked(self):
         if self.radioButton_tr.isChecked():
             self.radioButton_t.setChecked(False)
@@ -265,6 +268,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
         else:
             self.radioButton_tr.setChecked(not self.radioButton_tr.isChecked())
 
+    @pyqtSlot()
     def on_radioButton_l_clicked(self):
         if self.radioButton_l.isChecked():
             self.radioButton_t.setChecked(False)
@@ -280,6 +284,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
         else:
             self.radioButton_l.setChecked( not self.radioButton_l.isChecked())
 
+    @pyqtSlot()
     def on_radioButton_c_clicked(self):
         if self.radioButton_c.isChecked():
             self.radioButton_t.setChecked(False)
@@ -295,7 +300,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
         else:
             self.radioButton_c.setChecked( not self.radioButton_c.isChecked())
 
-
+    @pyqtSlot()
     def on_radioButton_r_clicked(self):
         if self.radioButton_r.isChecked():
             self.radioButton_t.setChecked(False)
@@ -311,7 +316,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
         else:
             self.radioButton_r.setChecked( not self.radioButton_r.isChecked())
 
-
+    @pyqtSlot()
     def on_radioButton_bl_clicked(self):
         if self.radioButton_bl.isChecked():
             self.radioButton_t.setChecked(False)
@@ -327,7 +332,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
         else:
             self.radioButton_bl.setChecked( not self.radioButton_bl.isChecked())
 
-
+    @pyqtSlot()
     def on_radioButton_b_clicked(self):
         if self.radioButton_b.isChecked():
             self.radioButton_t.setChecked(False)
@@ -343,7 +348,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
         else:
             self.radioButton_b.setChecked( not self.radioButton_b.isChecked())
 
-
+    @pyqtSlot()
     def on_radioButton_br_clicked(self):
         if self.radioButton_br.isChecked():
             self.radioButton_t.setChecked(False)
@@ -359,7 +364,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
         else:
             self.radioButton_br.setChecked( not self.radioButton_br.isChecked())
 
-
+    @pyqtSlot()
     def on_comboBox_currentIndexChanged(self,index):
         if index == 0:
             self.pen.setStyle(Qt.SolidLine)
@@ -376,6 +381,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
         self.queue.put(CH_PEN)
         self.newOperation.emit() 
 
+    @pyqtSlot()
     def on_horizontalSlider_valueChanged(self,value):
         self.lineEdit_linewidth.setText(str(value))
         self.pen.setWidth(value)
@@ -385,6 +391,8 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
 
         self.queue.put(CH_PEN)
         self.newOperation.emit()
+
+    @pyqtSlot()
     def on_pushButton_getpencolor_clicked(self):
         color = QColor()
         color = QColorDialog.getColor()
@@ -398,6 +406,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
         self.queue.put(CH_PEN)
         self.newOperation.emit()
 
+    @pyqtSlot()
     def on_lineEdit_linewidth_textChanged(self,arg1):
         ok = False
         if len(arg1):
@@ -417,6 +426,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
             self.queue.put(CH_PEN)
             self.newOperation.emit()
 
+    @pyqtSlot()
     def on_comboBox_2_currentIndexChanged(self,index):
         #print(1)
         if index == 0:
@@ -457,6 +467,8 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
         #print(4)
         self.newOperation.emit()
         #print(5)
+
+    @pyqtSlot()
     def on_pushButton_getbrushcorol_clicked(self):
         if self.comboBox_2.currentIndex()==0:
             return

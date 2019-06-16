@@ -8,7 +8,7 @@ import pickle
 
 class Pline(PnonCloseShape):
     def __init__(self, *args):
-        super().__init__()
+        super(Pline,self).__init__()
         self.shapeType = SH_LINE
         self.l = QLine()
         if len(args) != 0:
@@ -92,8 +92,10 @@ class Pline(PnonCloseShape):
         self.l = S.map(self.l)
         self.updatePath()
 
+    
     def rotateM(self, R):
         self.l = R.map(self.l)
+        self.updatePath()
 
     def flipM(self, F):
         self.l = F.map(self.l)
@@ -104,3 +106,9 @@ class Pline(PnonCloseShape):
         path1.moveTo(self.l.p1())
         path1.lineTo(self.l.p2())
         self.path = path1
+
+
+if __name__ == "__main__":
+    print("a")
+    a = Pline()
+    print("b")

@@ -33,7 +33,11 @@ class Ppoliline(PnonCloseShape):
 
     # 反序列化函数
     def desSerialize(self, data):
-        data >> self.pointArray
+        #这里注意一下：
+        point=None
+        data >>point
+        if isinstance(point,QPoint):
+            self.pointArray.append(point)
         # 复合赋值位相关运算符重载
 
     # 左移<<
@@ -92,8 +96,9 @@ class Ppoliline(PnonCloseShape):
     
     def updatePath(self):
         path1 = QPainterPath()
-        path1.moveTo(QPointF(self.pointArray[0]))
-        for i in range(1, len(self.pointArray)):
-            path1.lineTo(QPointF(self.pointArray[i]))
-        self.path = path1
+        if len(self.pointArray)!=0:
+            path1.moveTo(QPointF(self.pointArray[0]))
+            for i in range(1, len(self.pointArray)):
+                path1.lineTo(QPointF(self.pointArray[i]))
+            self.path = path1
         

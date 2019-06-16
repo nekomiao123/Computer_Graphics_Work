@@ -205,7 +205,7 @@ class DrawWidget(QWidget):
             if QPoint.dotProduct(self.rotateCircleCenter-pos,self.rotateCircleCenter-pos)<400:
                 self.mouseOnRotateIcon=True
                 
-                self.setCursor(QCursor(QPixmap("//icon/rotatemouseicon.png")))
+                self.setCursor(QCursor(QPixmap("://icon/rotatemouseicon.png")))
             else:
                 self.mouseOnRotateIcon=False
                 self.setCursor(Qt.ArrowCursor)
@@ -242,7 +242,7 @@ class DrawWidget(QWidget):
                         self.selectPshapeShow.append(shape)
                 elif self.pointShape:
                     """同样注意del"""
-                    del self.pointShapeShow
+                    #del self.pointShapeShow
                     self.pointShapeShow=self.copyFromPshape(self.pointShape)
                     """这里应该注意一下translate和translated"""
                     self.pointShapeShow.translate(pos-self.posMousePress)
@@ -255,25 +255,25 @@ class DrawWidget(QWidget):
                 nowThate=180*math.atan2(pointthate.y(),pointthate.x())/math.pi
                 self.rotateThate=nowThate
                 shape=Pshape()
-                c=self.selectRect.center()
+                c = self.selectRect.center()
                 if len(self.selectPshape)!=0:
-                    for i in range(len(self.selectPshapeShow)):
+                    '''for i in range(len(self.selectPshapeShow)):
                         """同样del"""
-                        del self.selectPshapeShow[i]
+                        del self.selectPshapeShow[i]'''
                     self.selectPshapeShow.clear()
                     for i in range(len(self.selectPshape)):
                         shape=self.copyFromPshape(self.selectPshape[i])
-                        shape.rorate(nowThate-self.oldRotateThate,c)
+                        shape.rotate(nowThate-self.oldRotateThate,c)
                         """同样注意<<"""
                         self.selectPshapeShow.append(shape)
                     """这里应该注意一下，Qt中是不为空指针，不知道Python中如何使用"""
                 elif not self.pointShape:
-                    del self.pointShapeShow
+                    #del self.pointShapeShow
                     self.pointShapeShow=self.copyFromPshape(self.pointShape)
-                    self.pointShapeShow.rorate(nowThate-self.oldRotateThate,c)
-                mat=QTransform(1,0,0,1,0,0)
+                    self.pointShapeShow.rotate(nowThate-self.oldRotateThate,c)
+                mat=QTransform(1,0,0, 0,1,0, 0,0,1)
                 mat1=mat
-                """"这里没有点出来x，和y"""
+                """这里没有点出来x，和y"""
                 mat.translate(-self.selectRect.center().x(),-self.selectRect.center().y())
                 mat1.rotate(nowThate+90)
                 mat=mat*mat1
@@ -425,9 +425,9 @@ class DrawWidget(QWidget):
                 self.rotating=True
             else:
                 if len(self.selectPshapeShow)!=0:
-                    for i in range(len(self.selectPshapeShow)):
+                    '''for i in range(len(self.selectPshapeShow)):
                         """同样del"""
-                        del self.selectPshapeShow[i]
+                        del self.selectPshapeShow[i]'''
                     self.selectPshape.clear()
                     self.selectPshapeShow.clear()
                 if not self.pointShape:
@@ -555,7 +555,7 @@ class DrawWidget(QWidget):
                 if self.selectRect.width()<5 and self.selectRect.height()<5:
                     index=len(self.pshapeList)-1
                     while index>=0:
-                        if self.pshapeList[index].ptOnShape(pos) and self.pshapeList[index].isVisible:
+                        if self.pshapeList[index].ptOnShape(event.pos()) and self.pshapeList[index].isVisible:
                             self.hist.operation = OP_SELECT
                             self.hist.isSelect = True
                             self.hist.doShape = self.pshapeList[index]
@@ -725,7 +725,7 @@ class DrawWidget(QWidget):
                     k = 0
                     self.hist.operation = OP_SELECT
                     self.hist.isSelect = True
-                    for i in  range(len(self.pshapeList)):
+                    for i in range(len(self.pshapeList)):
                         if self.pshapeList[i].isInRect(self.selectRect) and self.pshapeList[i].isVisible:
                             self.hist.doShape = self.pshapeList[i]
                             self.selectPshape.append(self.pshapeList[i])
@@ -755,6 +755,8 @@ class DrawWidget(QWidget):
                     self.pointShapeShow = self.copyFromPshape(self.pointShape)
                     self.controlRect = self.pointShapeShow.getAllContrlRect()
         elif self.tool==TOOL_RECT:
+            if self.PR == None:
+                return
             self.PR.setBottomRight(pos,self.isDriectional)
             self.hist.operation = OP_SHOW
             self.hist.doShape = self.PR
@@ -763,6 +765,8 @@ class DrawWidget(QWidget):
             self.hist.addRecord()
             self.PR =None
         elif self.tool==TOOL_ELLIPSE:
+            if self.PE == None:
+                return
             self.PE.setBottomRight(event.pos(),self.isDriectional)
             self.hist.operation = OP_SHOW
             self.hist.doShape = self.PE
@@ -771,6 +775,8 @@ class DrawWidget(QWidget):
             self.hist.addRecord()
             self.PE = None
         elif self.tool==TOOL_LINE:
+            if self.PL == None:
+                return
             self.PL.setEnd(event.pos(), self.isDriectional)
             self.hist.operation = OP_SHOW
             self.hist.doShape = self.PL
@@ -1125,8 +1131,9 @@ class DrawWidget(QWidget):
         self.hist.operation = OP_SHOW
         self.hist.visible = False
         if len(self.selectPshape) != 0:
-            for i in range(len(self.selectPshapeShow)):
+            '''for i in range(len(self.selectPshapeShow)):
                 del self.selectPshapeShow[i]
+            '''
             self.selectPshapeShow.clear()
             for i in range(len(self.selectPshape)):
                 self.hist.doShape = self.selectPshape[i]

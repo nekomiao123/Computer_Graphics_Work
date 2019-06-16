@@ -32,17 +32,18 @@ class Simple2DDoc:
                 p2=Pellipse(pshape[i])
                 p2.serialize(data)
             elif pshape[i].shapeType == SH_LINE:
+                
                 p3 = Pline(pshape[i])
                 p3.serialize(data)
             elif pshape[i].shapeType==SH_CURVE:
                 p4=Pcurve(pshape[i])
                 p4.serialize(data)
-            # elif pshape[i].shapeType==SH_POLYGON:
-            #     p5=Ppolygon(pshape[i])
-            #     p5.serialize(data)
-            # elif pshape[i].shapeType==SH_POLYLINE:
-            #     p6=Ppoliline(pshape[i])
-            #     p6.serialize(data)
+            elif pshape[i].shapeType==SH_POLYGON:
+                p5=Ppolygon(pshape[i])
+                p5.serialize(data)
+            elif pshape[i].shapeType==SH_POLYLINE:
+                p6=Ppoliline(pshape[i])
+                p6.serialize(data)
         file.close()
         return fileName
     @staticmethod
@@ -153,7 +154,7 @@ class Simple2DDoc:
         file.close()
         return ret
     @staticmethod
-    def printer(self,v,size):
+    def printer(v,size):
         printer=QPrinter()
         img=QImage(size,QImage.Format_ARGB32)
         printer.setPageSize(QPrinter.A4)
@@ -189,11 +190,13 @@ class Simple2DDoc:
             painter.end()
         return True
     @staticmethod
-    def saveToImage(self,v,imageSize,imgName):
+    def saveToImage(v,imageSize,imgName):
         imgout=QImage(imageSize,QImage.Format_ARGB32)
+        print("saveToImage")
+        #print(imgName)
         pt=QPainter()
         pt.begin(imgout)
-        pt.fillPath(imgout.rect(),QBrush(Qt.white))
+        pt.fillRect(imgout.rect(),QBrush(Qt.white))
         shape=Pshape()
         for i in range(len(v)):
             shape=v[i]
@@ -211,8 +214,8 @@ class Simple2DDoc:
         pt.end()
         imgout.save(imgName)
     @staticmethod
-    def printPreview(self,v,size):
+    def printPreview(v,size):
         pass
     @staticmethod
-    def printSet(self):
+    def printSet():
         pass

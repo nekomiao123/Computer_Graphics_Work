@@ -35,6 +35,7 @@ class Pshape(QObject):
         '''
 
     def __init__(self):
+        super(Pshape,self).__init__()
         self.isVisible = False  # 是否可见
         self.isSelected = False  # 是否被选中
         self.isAdjusting = False  # 是否处于被调整状态
@@ -50,8 +51,9 @@ class Pshape(QObject):
 
     # 反序列化函数
     def desSerialize(self, data):
-        data >> self.pen
         self.shapeType = data.readInt()
+        data >> self.pen
+        
 
     # 复合赋值位相关运算符重载
     # other对应QDataStream类型，pshape对应Pshape类型
@@ -114,8 +116,8 @@ class Pshape(QObject):
         pass
 
     # 以给定点为旋转中心旋转给定角度
-    def rorate(self, dTheta, ptOrigin):
-        a = QTransform(1, 0, 0, 1, 0, 0)
+    def rotate(self, dTheta, ptOrigin):
+        a = QTransform(1,0,0, 0,1,0, 0,0,1)
         b = a
         c = a
         b.translate(-ptOrigin.x(), -ptOrigin.y())
