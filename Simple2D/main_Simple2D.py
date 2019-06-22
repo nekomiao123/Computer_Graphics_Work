@@ -47,7 +47,7 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         rect = QRect()
         rect = QApplication.desktop().availableGeometry()  #获取主屏幕大小
         #setWindowFlags(windowFlags()&~Qt::WindowMaximizeButtonHint);    # 禁止最大化按钮
-        self.setFixedSize(rect.width(),rect.height())    #不能修改窗口大小
+        self.setFixedSize(rect.width(),rect.height())    
         self.widget.resize(self.width()-120,self.height()-180)
         self.widget.strawColorGet.connect(self.updataStrawColor)
         self.dockWidget_3.visibilityChanged.connect(self.toolBoxCloseShow)
@@ -128,7 +128,6 @@ class MainWidget(QMainWindow,Ui_MainWindow):
         self.profile=filename
         self.hasProgram=2
 
-    #这个可能有问题
     @pyqtSlot()
     def on_action_close_triggered(self):#菜单关闭项目
         if self.hasProgram==1 or self.hasProgram==0:
@@ -136,14 +135,10 @@ class MainWidget(QMainWindow,Ui_MainWindow):
                 self.on_action_save_triggered()
             
         self.hasProgram=2
-
-        #QVector<DMShape *> *p=ui->widget->getShapeList()
         p = self.widget.getShapeList()
-        #DMShape * t
         while len(p)!=0:
             p.pop()
         
-        #delete p
         self.hasProgram=0
         self.widget.closeProgram()
         
@@ -155,7 +150,6 @@ class MainWidget(QMainWindow,Ui_MainWindow):
     def on_action_newfile_triggered(self):#菜单打开新工程
         self.on_action_close_triggered()
         self.hasProgram=2   
-        #QVector<DMShape*> *p=new QVector<DMShape*>()
         p = []
         self.widget.setShapeList(p)
 
@@ -477,7 +471,7 @@ class MainWidget(QMainWindow,Ui_MainWindow):
     def on_Button_lnkcolor_clicked(self):#选择墨水瓶描绘颜色
         color = QColor()
         color=QColorDialog.getColor(self.widget.getLnkColor(),None,"选择墨水瓶颜色")
-        #print("test")
+        
         pix = QPixmap(self.Button_lnkcolor.iconSize())
         pt = QPainter()
         pt.begin(pix)
@@ -566,8 +560,7 @@ class MainWidget(QMainWindow,Ui_MainWindow):
     def on_action_about_triggered(self):
     
         QMessageBox.about(None,"关于",
-                                    "软件暂定为1.0版本,截至目前软件还有诸多不完善的地方与bug,还请见谅\n\r"
-                                    "未实现功能:打印预览、打印设置、窗口大小变换、工具栏与状态栏的隐现……")
+                                    "软件暂定为1.0版本,截至目前软件还有诸多不完善的地方与bug,还请见谅\n\r")
 
     @pyqtSlot()
     def on_action_out_image_triggered(self):

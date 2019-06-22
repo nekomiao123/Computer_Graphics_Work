@@ -26,7 +26,7 @@ class Ppoliline(PnonCloseShape):
     def serialize(self, data):
         super().serialize(data)
         if len(self.pointArray)==0:
-            print("我没有")
+            print("a")
         else:
             for i in range(len(self.pointArray)):
                 data << QPoint(self.pointArray[i])

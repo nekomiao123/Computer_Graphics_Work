@@ -196,11 +196,11 @@ class Pcurve(PnonCloseShape):
     def serialize(self, data):
         super().serialize(data)
         if len(self.pointArray)!=0:
-            for i in range(self.pointArray):
+            for i in range(len(self.pointArray)):
                 data<<QPoint(self.pointArray[i])
         if len(self.rectArray)!=0:
-            for i in range(self.rectArray):
-                data<<QRect(self.rectArray)
+            for i in range(len(self.rectArray)):
+                data<<QRect(self.rectArray[i])
 
     # 反序列化函数
     def desSerialize(self, data):

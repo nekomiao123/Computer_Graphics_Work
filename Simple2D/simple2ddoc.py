@@ -192,8 +192,7 @@ class Simple2DDoc:
     @staticmethod
     def saveToImage(v,imageSize,imgName):
         imgout=QImage(imageSize,QImage.Format_ARGB32)
-        print("saveToImage")
-        #print(imgName)
+        
         pt=QPainter()
         pt.begin(imgout)
         pt.fillRect(imgout.rect(),QBrush(Qt.white))

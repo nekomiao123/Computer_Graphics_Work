@@ -92,9 +92,9 @@ class Pline(PnonCloseShape):
         self.l = S.map(self.l)
         self.updatePath()
 
-    
     def rotateM(self, R):
         self.l = R.map(self.l)
+        #print(self.l)
         self.updatePath()
 
     def flipM(self, F):
@@ -106,9 +106,3 @@ class Pline(PnonCloseShape):
         path1.moveTo(self.l.p1())
         path1.lineTo(self.l.p2())
         self.path = path1
-
-
-if __name__ == "__main__":
-    print("a")
-    a = Pline()
-    print("b")

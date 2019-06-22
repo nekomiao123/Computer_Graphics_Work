@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import PyQt5.Qt
+import math
 
 FT_HORIZONTAL = 0  # 水平翻转
 FT_VERTICAL = 1  # 垂直翻转
@@ -18,22 +19,6 @@ class Pshape(QObject):
     # 利用python的类的成员变量来实现C++中静态变量的效果,但这种只能使用类来访问
     penBlueDot = QPen(Qt.blue, 2, Qt.DotLine)  # 蓝色虚线画笔
     penBlueSolid = QPen(Qt.blue, 2, Qt.SolidLine)  # 蓝色实线画笔
-    # 为了支持在类的实例中操作静态变量，我们可以借助@property装饰器来这样写
-    '''
-    @property
-    def penBlueDot(self):
-        return Pshape.penBlueDot
-    @penBlueDot.setter
-    def penBlueDot(self,pen):
-        Pshape.penBlueDot = pen
-    @property
-    def penBlueSolid(self):
-        return Pshape.penBlueSolid
-    @penBlueSolid.setter
-    def penBlueSolid(self,pen):
-        Pshape.penBlueSolid = pen
-        '''
-
     def __init__(self):
         super(Pshape,self).__init__()
         self.isVisible = False  # 是否可见
@@ -117,14 +102,22 @@ class Pshape(QObject):
 
     # 以给定点为旋转中心旋转给定角度
     def rotate(self, dTheta, ptOrigin):
+        '''R00 = math.cos(dTheta)
+        R01 = -math.sin(dTheta)	
+        R02 = ptOrigin.x()*(1-math.cos(dTheta))+ptOrigin.y()*math.sin(dTheta)
+        R10 = math.sin(dTheta)
+        R11 = math.cos(dTheta)
+        R12 = ptOrigin.y()*(1-math.cos(dTheta))-ptOrigin.x()*math.sin(dTheta)
+        a = QTransform(R00,R01,R02, R10,R11,R12, 0,0,1)
+        '''
         a = QTransform(1,0,0, 0,1,0, 0,0,1)
         b = a
         c = a
         b.translate(-ptOrigin.x(), -ptOrigin.y())
         c.rotate(dTheta)
-        b = b * c
+        bt = b * c
         a.translate(ptOrigin.x(), ptOrigin.y())
-        b = b * a
+        b = bt * a
         self.rotateM(b)
 
     # 根据给定矩阵进行旋转
@@ -204,9 +197,3 @@ class Pshape(QObject):
 
     def getBoundingRect(self):
         return self.path.boundingRect().toRect()
-
-
-f1 = Pshape()
-f2 = Pshape()
-f1.penBlueDot = QPen(Qt.blue, 2, Qt.DotLine)
-#print(f1.penBlueDot, f2.penBlueDot)

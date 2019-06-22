@@ -22,7 +22,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
     newOperation = pyqtSignal()
     def __init__(self):
         super().__init__()
-        self.queue = queue.Queue()  #队列大小没有限制
+        self.queue = queue.Queue()  
         self.rect = QRect()
         self.origin = 5
         self.pen = QPen()
@@ -412,7 +412,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
         if len(arg1):
             return
         value = arg1.toInt(ok,10)
-        #value = int(arg1)
+        
         if (not ok) or (value>self.horizontalSlider.maximum()) or (value<1):
             self.lineEdit_linewidth.setText(str(self.pen.width()))
         
@@ -428,7 +428,7 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
 
     @pyqtSlot()
     def on_comboBox_2_currentIndexChanged(self,index):
-        #print(1)
+       
         if index == 0:
             self.brush.setStyle(Qt.NoBrush)
         elif index == 1:
@@ -459,14 +459,14 @@ class PropertyPannel(QDialog,Ui_PropertyPannel):
             self.brush.setStyle(Qt.FDiagPattern)
         elif index == 14:
             self.brush.setStyle(Qt.DiagCrossPattern)
-        #print(2)
+
         self.isIconChange[2] = True
         self.repaint()
-        #print(3)
+ 
         self.queue.put(CH_BRUSH)
-        #print(4)
+      
         self.newOperation.emit()
-        #print(5)
+     
 
     @pyqtSlot()
     def on_pushButton_getbrushcorol_clicked(self):

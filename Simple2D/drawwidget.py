@@ -29,7 +29,6 @@ TOOL_ROTATE=13
 class DrawWidget(QWidget):
     #定义带QColor参数的信号
     strawColorGet=pyqtSignal(QColor)
-    #!!!缺少隐式转换
     def __init__(self,parent=None):
         super().__init__(parent)
         self.setAutoFillBackground(True)
@@ -66,7 +65,6 @@ class DrawWidget(QWidget):
         self.PRPN.hide()
         self.PRPN.newOperation.connect(self.doOpFromAtt)
         self.tool=0
-        """Qt定义位空指针"""
         self.PR=None
         self.PC=None
         self.PL=None
@@ -78,7 +76,6 @@ class DrawWidget(QWidget):
         self.potColor=QColor(Qt.black)
         self.lnkColor=QColor(Qt.black)
         self.strawColorGet.emit(self.potColor)
-        """加载图像"""
         self.rotateIconBlue=QImage()
         self.rotateIconBlue.load("://icon/2x_anti-reload.png")
         self.rotateIconBlack = QImage()
@@ -96,7 +93,6 @@ class DrawWidget(QWidget):
         self.mouseOnRotateIcon = False
         self.mouseOnScaleRect = False
         self.mouseOnMoveArea = False
-        """感觉有问题"""
         #self.mouseOnScaleRect = False
         self.mouseOnAdjustRect = False
         self.selectMode=False
@@ -140,7 +136,6 @@ class DrawWidget(QWidget):
         if self.tool==TOOL_SCARE and self.selectMode:
             for i in range(len(self.controlRect)):
                 pt.drawRect(self.controlRect[i])
-        """Qt空指针的类型不知道是不是None"""
         #矩形工具用蓝色实线画还没有完成的矩形
         if self.tool==TOOL_RECT and self.PR !=None:
             self.PR.drawFrame(pt)
@@ -211,40 +206,35 @@ class DrawWidget(QWidget):
                 self.setCursor(Qt.ArrowCursor)
         elif self.tool==TOOL_ADJUST:
             if self.pointShapeShow:
-                """参数问题"""
+
                 if not self.pointShape.ptOnContrlPoint(pos):
                     self.setCursor(Qt.ArrowCursor)
                     self.mouseOnAdjustRect=False
                 else:
                     self.setCursor(Qt.SizeAllCursor)
                     self.mouseOnAdjustRect=True
-                    """参数问题"""
+
                     self.adjustControlRectIndex=self.pointShape.getCurrentContrlPoint(pos)
         if not self.mouseclick:
             return
-        """应该用break，不知道为啥出错"""
+
         if self.tool==TOOL_N0:
             pass
         elif self.tool==TOOL_SELECT:
             if self.moving:
                 if len(self.selectPshape)!=0:
                     shape=Pshape()
-                    '''
-                    for i in range(len(self.selectPshapeShow)):
-                        """Qt中用delete，网上说释放内存不改变内容"""
-                        del self.selectPshapeShow[i]'''
                     self.selectPshapeShow.clear()
                     for i in range(len(self.selectPshape)):
                         shape=self.copyFromPshape(self.selectPshape[i])
-                        """好像也是参数问题"""
+                    
                         shape.translate(pos-self.posMousePress)
-                        """Qt中用的是<<,按照之前的贝塞尔曲线的经验，应该是赋值添加"""
+                    
                         self.selectPshapeShow.append(shape)
                 elif self.pointShape:
-                    """同样注意del"""
-                    #del self.pointShapeShow
+                 
                     self.pointShapeShow=self.copyFromPshape(self.pointShape)
-                    """这里应该注意一下translate和translated"""
+                    
                     self.pointShapeShow.translate(pos-self.posMousePress)
                 self.selectPoly=QPolygon(self.selectRect.translated(pos-self.posMousePress))
             else:
@@ -257,30 +247,28 @@ class DrawWidget(QWidget):
                 shape=Pshape()
                 c = self.selectRect.center()
                 if len(self.selectPshape)!=0:
-                    '''for i in range(len(self.selectPshapeShow)):
-                        """同样del"""
-                        del self.selectPshapeShow[i]'''
+                   
                     self.selectPshapeShow.clear()
                     for i in range(len(self.selectPshape)):
                         shape=self.copyFromPshape(self.selectPshape[i])
                         shape.rotate(nowThate-self.oldRotateThate,c)
-                        """同样注意<<"""
+                     
                         self.selectPshapeShow.append(shape)
-                    """这里应该注意一下，Qt中是不为空指针，不知道Python中如何使用"""
+              
                 elif not self.pointShape:
-                    #del self.pointShapeShow
+                  
                     self.pointShapeShow=self.copyFromPshape(self.pointShape)
                     self.pointShapeShow.rotate(nowThate-self.oldRotateThate,c)
                 mat=QTransform(1,0,0, 0,1,0, 0,0,1)
                 mat1=mat
-                """这里没有点出来x，和y"""
+              
                 mat.translate(-self.selectRect.center().x(),-self.selectRect.center().y())
                 mat1.rotate(nowThate+90)
                 mat=mat*mat1
                 mat1.setMatrix(1,0,0, 0,1,0, 0,0,1)
                 mat1.translate(self.selectRect.center().x(),self.selectRect.center().y())
                 mat=mat*mat1
-                """不能点出map"""
+            
                 self.selectPoly=mat.map(QPolygon(self.selectRect))
                 self.rotateCircleCenter=mat.map(self.rotateCircleCenterOld)
             else:
@@ -296,7 +284,7 @@ class DrawWidget(QWidget):
                 elif self.scalintControlRectIndex==3:
                     self.scaleRect.setRight(pos.x())
                 elif self.scalintControlRectIndex==4:
-                    self.scaleRect.setBottomRight(pos.x)
+                    self.scaleRect.setBottomRight(pos)
                 elif self.scalintControlRectIndex==5:
                     self.scaleRect.setBottom(pos.y())
                 elif self.scalintControlRectIndex==6:
@@ -305,22 +293,21 @@ class DrawWidget(QWidget):
                     self.scaleRect.setLeft(pos.x())
                 self.selectPoly=QPolygon(self.scaleRect)
                 self.controlRect=self.setControlRect(self.scaleRect)
-                """这里不知道强制类型转换对不对"""
+         
                 self.sx=float(self.scaleRect.width())/self.selectRect.width()
                 self.sy=float(self.scaleRect.height())/self.selectRect.height()
                 shape=Pshape()
                 psc=self.scaleRect.topLeft()
                 if len(self.selectPshape)!=0:
-                    for i in range(len(self.selectPshapeShow)):
-                        del self.selectPshapeShow[i]
+                   
                     self.selectPshapeShow.clear()
                     for i in range(len(self.selectPshape)):
                         shape=self.copyFromPshape(self.selectPshape[i])
                         shape.translate(self.scaleRect.topLeft()-self.selectRect.topLeft())
                         shape.scale(self.sx,self.sy,psc)
-                        """同样是<<赋值"""
+                       
                         self.selectPshapeShow.append(shape)
-                    """同样空指针判断"""
+                  
                 elif not self.pointShape:
                     if not self.pointShapeShow:
                         del  self.pointShapeShow
@@ -356,7 +343,7 @@ class DrawWidget(QWidget):
     def mousePressEvent(self, event):
         k=0
         self.mouseclick=True
-        """同样的break"""
+     
         if self.tool==TOOL_N0:
             pass
         elif self.tool==TOOL_SELECT:
@@ -365,16 +352,13 @@ class DrawWidget(QWidget):
                 self.posMousePress=event.pos()
             else:
                 if len(self.selectPshape)!=0:
-                    '''
-                    for i in range(len(self.selectPshapeShow)):
-                        """同样del"""
-                        del self.selectPshapeShow[i]'''
+                  
                     self.selectPshape.clear()
                     self.selectPshapeShow.clear()
                 if not self.pointShape:
                     if not self.pointShapeShow:
                         del self.pointShapeShow
-                    """Qt空指针nullptr,python尝试none"""
+                
                     self.pointShape=None
                     self.pointShapeShow=None
                 self.selectRect.setTopLeft(event.pos())
@@ -396,15 +380,13 @@ class DrawWidget(QWidget):
                 self.scaleRect=self.selectRect
             else:
                 if len(self.selectPshapeShow)!=0:
-                    for i in range(len(self.selectPshapeShow)):
-                        """同样del"""
-                        del self.selectPshapeShow[i]
+                    
                     self.selectPshape.clear()
                     self.selectPshapeShow.clear()
                 if not self.pointShape:
                     if not self.pointShapeShow:
                         del self.pointShapeShow
-                    """Qt空指针nullptr,python尝试none"""
+                  
                     self.pointShape = None
                     self.pointShapeShow = None
                 self.selectRect.setTopLeft(event.pos())
@@ -425,15 +407,13 @@ class DrawWidget(QWidget):
                 self.rotating=True
             else:
                 if len(self.selectPshapeShow)!=0:
-                    '''for i in range(len(self.selectPshapeShow)):
-                        """同样del"""
-                        del self.selectPshapeShow[i]'''
+                    
                     self.selectPshape.clear()
                     self.selectPshapeShow.clear()
                 if not self.pointShape:
                     if not self.pointShapeShow:
                         del self.pointShapeShow
-                    """Qt空指针nullptr,python尝试none"""
+                
                     self.pointShape = None
                     self.pointShapeShow = None
                 self.selectRect.setTopLeft(event.pos())
@@ -456,7 +436,7 @@ class DrawWidget(QWidget):
                 if self.pointShape:
                     if self.pointShapeShow:
                         del self.pointShapeShow
-                    """空指针问题"""
+            
                     self.pointShape=None
                     self.pointShapeShow=None
                 self.hist.operation = OP_SELECT
@@ -498,7 +478,7 @@ class DrawWidget(QWidget):
             self.PL.setStart(event.pos())
             self.PL.pen = self.penUsing
         elif self.tool==TOOL_POLYLINE:
-            """空指针用None代替"""
+           
             if self.PPL == None:
                 self.PPL=Ppoliline()
                 self.pshapeList.append(self.PPL)
@@ -577,7 +557,7 @@ class DrawWidget(QWidget):
                         self.selectMode=False
                     self.oldRotateThate=-90
                 else:
-                    """空指针用None代替"""
+                   
                     self.pointShapeShow=None
                     self.pointShape=None
                     self.PRPN.setSelectRect(self.selectRect)
@@ -601,7 +581,7 @@ class DrawWidget(QWidget):
                 self.rotateCircleCenterOld=self.rotateCircleCenter
         elif self.tool==TOOL_SCARE:
             if self.scaling:
-                """缺少历史类"""
+             
                 self.scaling=False
                 self.hist.origin = self.scaleRect.topLeft()
                 self.hist.Sx = self.sx
@@ -654,7 +634,7 @@ class DrawWidget(QWidget):
                         self.selectMode=False
                     self.oldRotateThate=-90
                 else:
-                    """空指针用None代替"""
+                 
                     self.pointShapeShow = None
                     self.pointShape = None
                     self.PRPN.setSelectRect(self.selectRect)
@@ -718,7 +698,7 @@ class DrawWidget(QWidget):
                         self.selectMode = False
                     self.oldRotateThate = -90
                 else:
-                    """空指针用None代替"""
+             
                     self.pointShapeShow = None
                     self.pointShape = None
                     self.PRPN.setSelectRect(self.selectRect)
@@ -832,7 +812,7 @@ class DrawWidget(QWidget):
     def revoke(self):
         if len(self.hist.hint)==0:
             return
-        """不知道这个循环"""
+       
         for i in range(self.hist.hint[-1]):
             self.hist.undo()
         self.hist.reint.append(self.hist.hint.pop())
@@ -840,7 +820,7 @@ class DrawWidget(QWidget):
     def recover(self):
         if len(self.hist.reint)==0:
             return
-        """循环条件"""
+      
         for i in range(self.hist.reint[-1]):
             self.hist.redo()
         self.hist.hint.append(self.hist.reint.pop())
@@ -1022,8 +1002,7 @@ class DrawWidget(QWidget):
                             k+=1
                     self.hist.hint.append(k)
         self.update()
-    """原函数用了const修饰，目的是防止指针意外变化
-    但python中没有指针，所以我觉得不用修饰"""
+ 
     def getBrushUsing(self):
         return self.brushUsing
     def getHistory(self):
@@ -1044,7 +1023,7 @@ class DrawWidget(QWidget):
 
     def copyFromPshape(self,s):
         r=Pshape()
-        #print(s)
+       
         if s.shapeType==SH_LINE:
             self.PL=Pline(s)
             r=self.PL
@@ -1131,9 +1110,7 @@ class DrawWidget(QWidget):
         self.hist.operation = OP_SHOW
         self.hist.visible = False
         if len(self.selectPshape) != 0:
-            '''for i in range(len(self.selectPshapeShow)):
-                del self.selectPshapeShow[i]
-            '''
+            
             self.selectPshapeShow.clear()
             for i in range(len(self.selectPshape)):
                 self.hist.doShape = self.selectPshape[i]
@@ -1201,7 +1178,6 @@ class DrawWidget(QWidget):
                 self.hist.doShape=p
                 self.hist.addRecord()
     def straw(self,point):
-        #没有点出来toimage
         imag=self.grab(self.rect()).toImage()
         self.lnkColor=imag.pixelColor(point)
         self.potColor=self.lnkColor
